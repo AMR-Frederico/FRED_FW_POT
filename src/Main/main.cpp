@@ -61,9 +61,6 @@ void setup() {
   nh.subscribe(subCmdWheels);
   nh.subscribe(subCmdVel);
 
-
- 
-
 }
 
 void loop() 

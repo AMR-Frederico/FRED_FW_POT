@@ -3,7 +3,7 @@
 #include <Main/config.h>
 #include <std_msgs/Int16.h>
 #include <std_msgs/Float32.h>
- 
+
 //@vel PWM signal between 0 and 1023 
 // postive our negative representes de direction, positive been forward
 
@@ -70,8 +70,11 @@ void stop(){
 void cmdVelCB( const geometry_msgs::Twist& twist)
 {
   int gain = 1;
-  float left_wheel_data = gain*(twist.linear.x - twist.angular.z*L);
+ 
+  float left_wheel_data  = gain*(twist.linear.x - twist.angular.z*L);
   float right_wheel_data = gain*(twist.linear.x + twist.angular.z*L);
+
+  
   
   if(left_wheel_data >= 0)
   { 
@@ -111,4 +114,6 @@ void cmdVelCB( const geometry_msgs::Twist& twist)
     digitalWrite(M4_IN1, LOW);
     digitalWrite(M4_IN2, HIGH);
   }
+
+   
 }
