@@ -14,13 +14,8 @@ bool _connect = false ;
 
 
 ros::NodeHandle  nh;
-std_msgs::Float32 left_wheel_vel;
-ros::Publisher left_wheel_vel_pub("/left_wheel_velocity", &left_wheel_vel);
 
-std_msgs::Float32 right_wheel_vel;
-ros::Publisher right_wheel_vel_pub("/right_wheel_velocity", &right_wheel_vel);
-
-ros::Subscriber<std_msgs::Int16> subCmdLeft("cmd_left_wheel", cmdLeftWheelCB );
+ros::Subscriber<std_msgs::Int16> subCmdWheels("cmd_wheels", cmdWheelsCB );
 ros::Subscriber<std_msgs::Int16> subCmdRight("cmd_right_wheel",cmdRightWheelCB );
 
 ros::Subscriber<geometry_msgs::Twist> subCmdVel("cmd_vel", cmdVelCB);
@@ -33,8 +28,8 @@ void setup() {
   
   ledcAttachPin(M2_PWM, CANAL_M2);//Atribuimos o pino M2_PWM ao canal 0.
   ledcAttachPin(M3_PWM, CANAL_M3);//Atribuimos o pino M3_PWM ao canal 1.
-  ledcSetup(CANAL_M2, 1000, 10);//Atribuimos ao canal 0 a frequencia de 1000Hz com resolucao de 10bits.
-  ledcSetup(CANAL_M3, 1000, 10);//Atribuimos ao canal 0 a frequencia de 1000Hz com resolucao de 10bits.
+  ledcSetup(CANAL_M2,  FREQUENCIA, 10);//Atribuimos ao canal 0 a frequencia de 1000Hz com resolucao de 10bits.
+  ledcSetup(CANAL_M3, FREQUENCIA, 10);//Atribuimos ao canal 0 a frequencia de 1000Hz com resolucao de 10bits.
 
   //------------motors  
   pinMode(M1_PWM, OUTPUT);//Definimos os pinos  como saída.
@@ -42,8 +37,8 @@ void setup() {
   
   ledcAttachPin(M1_PWM, CANAL_M1);//Atribuimos o pino M2_PWM ao canal 0.
   ledcAttachPin(M4_PWM, CANAL_M4);//Atribuimos o pino M3_PWM ao canal 1.
-  ledcSetup(CANAL_M1, 1000, 10);//Atribuimos ao canal 0 a frequencia de 1000Hz com resolucao de 10bits.
-  ledcSetup(CANAL_M4, 1000, 10);//Atribuimos ao canal 0 a frequencia de 1000Hz com resolucao de 10bits.
+  ledcSetup(CANAL_M1, FREQUENCIA, 10);//Atribuimos ao canal 0 a frequencia de 1000Hz com resolucao de 10bits.
+  ledcSetup(CANAL_M4, FREQUENCIA, 10);//Atribuimos ao canal 0 a frequencia de 1000Hz com resolucao de 10bits.
 
   //-------------DIGITAL------------------
   pinMode(M1_IN2,OUTPUT);
@@ -63,7 +58,7 @@ void setup() {
   
   nh.initNode();
   nh.subscribe(subCmdRight);
-  nh.subscribe(subCmdLeft);
+  nh.subscribe(subCmdWheels);
   nh.subscribe(subCmdVel);
 
 
