@@ -7,7 +7,7 @@
 //@vel PWM signal between 0 and 1023 
 // postive our negative representes de direction, positive been forward
 
-void right_PWM(int CANAL,int IN1,int IN2, float vel){
+void write_PWM(int CANAL,int IN1,int IN2, float vel){
 
   if(vel>=SATURATION){
     vel = SATURATION;
@@ -32,37 +32,17 @@ void right_PWM(int CANAL,int IN1,int IN2, float vel){
 
 void cmdWheelsCB( const std_msgs::Int16& msg)
 {
-  right_PWM(CANAL_M1,M1_IN1,M1_IN2,msg.data);
-  right_PWM(CANAL_M2,M2_IN1,M2_IN2,msg.data);
-  right_PWM(CANAL_M3,M3_IN1,M3_IN2,msg.data);
-  right_PWM(CANAL_M4,M4_IN1,M4_IN2,msg.data);
+ 
 }
 
 void cmdRightWheelCB( const std_msgs::Int16& msg)
 {
   
-  if(msg.data >= 0)
-  {
-    ledcWrite(CANAL_M3,msg.data);
-    digitalWrite(M3_IN1, LOW);
-    digitalWrite(M3_IN2, HIGH);  
-  }
-  else
-  {
-     ledcWrite(CANAL_M3,msg.data);
-     digitalWrite(M3_IN1, HIGH);
-     digitalWrite(M3_IN2, LOW);
-  }
+  
 }
 
 void stop(){
-    digitalWrite(M2_IN1,LOW);
-    digitalWrite(M2_IN2,LOW);
-    digitalWrite(M3_IN1,LOW);
-    digitalWrite(M3_IN2,LOW); 
-
-    ledcWrite(CANAL_M2,0);
-    ledcWrite(CANAL_M3,0);
+    
 }
 
 
