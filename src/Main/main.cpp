@@ -14,9 +14,12 @@ void setup() {
 
 void loop() 
 {   
+
     if(!rosConnected(nh,_connect))
         stop();
-  
+
+    ros_loop();
+    
     nh.spinOnce();
 
 }
