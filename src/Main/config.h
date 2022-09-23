@@ -40,7 +40,9 @@
 
 //debug led
 #define  LED_BUILD_IN  2
+
 #define  LED_STRIP  14
+#define NUMPIXELS   5
 //serial infor
 #define  SERIAL_RATE  115200
 //kinematics configs 
