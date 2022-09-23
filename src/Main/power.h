@@ -3,11 +3,21 @@
 #include <Main/config.h>
 #include <std_msgs/Int16.h>
 #include <std_msgs/Float32.h>
+#include <Main/motor.h>
 
 //@vel PWM signal between 0 and 1023 
 // postive our negative representes de direction, positive been forward
 
-void write_PWM(int CANAL,int IN1,int IN2, float vel){
+motor motor1(M1_IN1 ,M1_IN2,M1_PWM,0);
+motor motor2(M2_IN1 ,M2_IN2,M2_PWM,1);
+motor motor3(M3_IN1 ,M3_IN2,M3_PWM,3);
+motor motor4(M4_IN1 ,M4_IN2,M4_PWM,4);
+
+
+
+void write_PWM(motor motor, float vel){
+
+  //satured output
 
   if(vel>=SATURATION){
     vel = SATURATION;
@@ -16,19 +26,31 @@ void write_PWM(int CANAL,int IN1,int IN2, float vel){
     vel = -SATURATION;
   }
   
+  //send to H bridge 
+
     if(vel >= 0)
   {
-    ledcWrite(CANAL,vel);
-    digitalWrite(IN1, LOW);
-    digitalWrite(IN2, HIGH);  
+    ledcWrite(motor.Canal ,vel);
+    digitalWrite(motor.In_B, LOW);
+    digitalWrite(motor.In_A, HIGH);  
   }
   else
   {
-     ledcWrite(CANAL,vel);
-     digitalWrite(IN1, HIGH);
-     digitalWrite(IN2, LOW);
+     ledcWrite(motor.Canal,vel);
+     digitalWrite(motor.In_B, HIGH);
+     digitalWrite(motor.In_A, LOW);
   }
 }
+
+int speed2pwm(int speed){
+  //max_speed - max rpm
+  //current_speed - desired rpm
+  
+  int desired_rpm = (MAX_RPM*speed)/MAX_SPEED ; 
+
+  return desired_rpm ;
+}
+
 
 void cmdWheelsCB( const std_msgs::Int16& msg)
 {
@@ -42,7 +64,10 @@ void cmdRightWheelCB( const std_msgs::Int16& msg)
 }
 
 void stop(){
-    
+  write_PWM(motor1,0);
+  write_PWM(motor2,0);
+  write_PWM(motor3,0);
+  write_PWM(motor4,0);
 }
 
 
@@ -50,50 +75,19 @@ void stop(){
 void cmdVelCB( const geometry_msgs::Twist& twist)
 {
   int gain = 1;
- 
+  
+  //figure out speed for each wheell 
+  //figure out speed in m/s for each wheel 
   float left_wheel_data  = gain*(twist.linear.x - twist.angular.z*L);
   float right_wheel_data = gain*(twist.linear.x + twist.angular.z*L);
 
-  
-  
-  if(left_wheel_data >= 0)
-  { 
-    ledcWrite(CANAL_M2,abs(left_wheel_data));
-    digitalWrite(M2_IN1, HIGH);
-    digitalWrite(M2_IN2, LOW); 
+  //convert speed from m/s to pwm 
+  int pwm_left  = speed2pwm(left_wheel_data);
+  int pwm_right = speed2pwm(right_wheel_data);
 
-    ledcWrite(CANAL_M1,abs(left_wheel_data));
-    digitalWrite(M1_IN1, HIGH);
-    digitalWrite(M1_IN2, LOW);  
-  }
-  else
-  {
-    ledcWrite(CANAL_M2,abs(left_wheel_data));
-    digitalWrite(M2_IN1, LOW);
-    digitalWrite(M2_IN2, HIGH);
 
-    ledcWrite(CANAL_M1,abs(left_wheel_data));
-    digitalWrite(M1_IN1, LOW);
-    digitalWrite(M1_IN2, HIGH);
-  }
-  if(right_wheel_data >= 0)
-  {
-    ledcWrite(CANAL_M3,abs(right_wheel_data));
-    digitalWrite(M3_IN1, HIGH);
-    digitalWrite(M3_IN2, LOW); 
-    ledcWrite(CANAL_M4,abs(right_wheel_data));
-    digitalWrite(M4_IN1, HIGH);
-    digitalWrite(M4_IN2, LOW);  
-  }
-  else
-  {
-    ledcWrite(CANAL_M3,abs(right_wheel_data));
-    digitalWrite(M3_IN1, LOW);
-    digitalWrite(M3_IN2, HIGH);
-    ledcWrite(CANAL_M4,abs(right_wheel_data));
-    digitalWrite(M4_IN1, LOW);
-    digitalWrite(M4_IN2, HIGH);
-  }
-
-   
+  write_PWM(motor1,pwm_right);
+  write_PWM(motor2,pwm_right);
+  write_PWM(motor3,pwm_left);
+  write_PWM(motor4,pwm_left);
 }

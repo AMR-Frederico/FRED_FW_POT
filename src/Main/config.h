@@ -68,3 +68,6 @@
 
 // VR = 0,18*(v - 0,0017w*)
 // VL = 0,18*(v + 0,0017w*) 
+
+#define MAX_RPM 1023
+#define MAX_SPEED 10 //m/s 

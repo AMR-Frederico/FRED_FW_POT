@@ -8,7 +8,7 @@
 #include <Main/config.h>
 #include <Main/ros_com.h>
 #include <Main/power.h>
-#include <Main/motor.h>
+
 
 
 bool _connect = false ;
@@ -19,12 +19,11 @@ ros::Subscriber<std_msgs::Int16> subCmdWheels("cmd_wheels", cmdWheelsCB );
 ros::Subscriber<std_msgs::Int16> subCmdRight("cmd_right_wheel",cmdRightWheelCB );
 ros::Subscriber<geometry_msgs::Twist> subCmdVel("cmd_vel", cmdVelCB);
 
-motor motor1(M1_IN1 ,M1_IN2,M1_PWM )
 
-void setup() {
-  //------------motors  
- 
-  
+
+
+
+void setup() { 
   pinMode(LED_BUILD_IN,OUTPUT);
   digitalWrite(LED_BUILD_IN,HIGH);
 
