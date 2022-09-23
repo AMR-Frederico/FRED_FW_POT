@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include <Main/config.h>
 
 class motor

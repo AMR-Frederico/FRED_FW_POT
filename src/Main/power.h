@@ -1,8 +1,6 @@
-#include <Arduino.h>
-#include <geometry_msgs/Twist.h>
+
 #include <Main/config.h>
-#include <std_msgs/Int16.h>
-#include <std_msgs/Float32.h>
+
 #include <Main/motor.h>
 
 //@vel PWM signal between 0 and 1023 
@@ -13,7 +11,8 @@ motor motor2(M2_IN1 ,M2_IN2,M2_PWM,1);
 motor motor3(M3_IN1 ,M3_IN2,M3_PWM,3);
 motor motor4(M4_IN1 ,M4_IN2,M4_PWM,4);
 
-
+int pwm_right = 0 ;
+int pwm_left = 0 ; 
 
 void write_PWM(motor motor, float vel){
 
@@ -82,8 +81,8 @@ void cmdVelCB( const geometry_msgs::Twist& twist)
   float right_wheel_data = gain*(twist.linear.x + twist.angular.z*L);
 
   //convert speed from m/s to pwm 
-  int pwm_left  = speed2pwm(left_wheel_data);
-  int pwm_right = speed2pwm(right_wheel_data);
+  pwm_left  = speed2pwm(left_wheel_data);
+  pwm_right = speed2pwm(right_wheel_data);
 
 
   write_PWM(motor1,pwm_right);
