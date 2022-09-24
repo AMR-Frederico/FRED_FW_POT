@@ -4,23 +4,27 @@
 #include <geometry_msgs/Twist.h>
 
 #include <Main/power.h>
-
+#include <Main/controler.h>
 
 // Subscribers ------------
 #define cmd_wheels_topic "cmd_wheels"
 #define cmd_right_wheel_topic "cmd_right_wheel"
 #define cmd_vel_topic "cmd_vel"
+#define cmd_led_strip_topic "cmd/led_strip/color"
 
 //Publisher 
 #define pwm_right_topic "power/status/pwm/right"
 #define pwm_left_topic "power/status/pwm/left"
 
+
 ros::NodeHandle  nh;
 
+//locomotion 
 ros::Subscriber<std_msgs::Int16> subCmdWheels(cmd_wheels_topic, cmdWheelsCB );
 ros::Subscriber<std_msgs::Int16> subCmdRight(cmd_right_wheel_topic,cmdRightWheelCB );
 ros::Subscriber<geometry_msgs::Twist> subCmdVel(cmd_vel_topic, cmdVelCB);
-
+//lights 
+ros::Subscriber<std_msgs::Float32> subLedStrip(cmd_led_strip_topic, led_strip_controler );
 
 std_msgs::Int16 pwmRightMsg ;
 ros::Publisher subPwmRight(pwm_right_topic, &pwmRightMsg);
@@ -45,6 +49,7 @@ void ros_init(){
   nh.subscribe(subCmdRight);
   nh.subscribe(subCmdWheels);
   nh.subscribe(subCmdVel);
+  nh.subscribe(subLedStrip);
 
   nh.advertise(subPwmRight);
   nh.advertise(subPwmLeft);
