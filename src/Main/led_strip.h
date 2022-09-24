@@ -6,7 +6,7 @@ Adafruit_NeoPixel pixels(NUMPIXELS, LED_STRIP, NEO_GRB + NEO_KHZ800);
 class Led_strip
 {
 private:
-    /* data */
+    
 public:
      Led_strip(/* args */);
      void on(int color);
@@ -22,7 +22,7 @@ void Led_strip::on(int color){
 
     pixels.fill(color);
     pixels.show();
-    
+
 }
 
 void Led_strip::off(){
