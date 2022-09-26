@@ -12,8 +12,15 @@ motor motor2(M2_IN1 ,M2_IN2,M2_PWM,1);
 motor motor3(M3_IN1 ,M3_IN2,M3_PWM,3);
 motor motor4(M4_IN1 ,M4_IN2,M4_PWM,4);
 
+
+//Global 
+
 int pwm_right = 0 ;
-int pwm_left = 0 ; 
+int pwm_left = 0  ; 
+int speed_linear ;
+int speed_angular ; 
+
+
 
 void write_PWM(motor motor, float vel){
 
@@ -52,23 +59,14 @@ int speed2pwm(int speed){
 }
 
 
-void cmdWheelsCB( const std_msgs::Int16& msg)
-{
- 
-}
-
-void cmdRightWheelCB( const std_msgs::Int16& msg)
-{
-  
-  
-}
-
 void stop(){
   write_PWM(motor1,0);
   write_PWM(motor2,0);
   write_PWM(motor3,0);
   write_PWM(motor4,0);
 }
+
+
 
 
 //receive the twsit msg and figure out the speed of each wheel 
@@ -78,18 +76,48 @@ void cmdVelCB( const geometry_msgs::Twist& twist)
   
   //figure out speed for each wheell 
   //figure out speed in m/s for each wheel 
-  float left_wheel_data  = gain*(twist.linear.x - twist.angular.z*L);
-  float right_wheel_data = gain*(twist.linear.x + twist.angular.z*L);
 
-  //convert speed from m/s to pwm 
-  pwm_left  = speed2pwm(left_wheel_data);
-  pwm_right = speed2pwm(right_wheel_data);
+  speed_angular = twist.angular.z;
+  speed_linear  = twist.linear.x;
+
+  // float left_wheel_data  = gain*(twist.linear.x - twist.angular.z*L);
+  // float right_wheel_data = gain*(twist.linear.x + twist.angular.z*L);
+
+  // //convert speed from m/s to pwm 
+  // pwm_left  = speed2pwm(left_wheel_data);
+  // pwm_right = speed2pwm(right_wheel_data);
 
 if(twist.linear.x > 10)
   led_strip_controler(1);
+
+}
+
+int getLinear(){
+    return speed_linear;
+}
+
+int getAngular(){
+    return speed_angular;
+}
+
+int cinematic_left(int linear, int angular,int gain){
+
+  return gain*(linear - angular*L);
+}
+
+int cinematic_right(int linear, int angular,int gain){
+
+  return gain*(linear + angular*L);
+}
+
+void write_all(int speed_left, int speed_right){
+
+  pwm_left  = speed2pwm(speed_left);
+  pwm_right = speed2pwm(speed_right);
 
   write_PWM(motor1,pwm_right);
   write_PWM(motor2,pwm_right);
   write_PWM(motor3,pwm_left);
   write_PWM(motor4,pwm_left);
+
 }

@@ -20,8 +20,6 @@
 ros::NodeHandle  nh;
 
 //locomotion 
-ros::Subscriber<std_msgs::Int16> subCmdWheels(cmd_wheels_topic, cmdWheelsCB );
-ros::Subscriber<std_msgs::Int16> subCmdRight(cmd_right_wheel_topic,cmdRightWheelCB );
 ros::Subscriber<geometry_msgs::Twist> subCmdVel(cmd_vel_topic, cmdVelCB);
 //lights 
 ros::Subscriber<std_msgs::Float32> subLedStrip(cmd_led_strip_topic, led_strip_controler_ros );
@@ -46,8 +44,6 @@ void ros_init(){
 
   nh.initNode();
 
-  nh.subscribe(subCmdRight);
-  nh.subscribe(subCmdWheels);
   nh.subscribe(subCmdVel);
   nh.subscribe(subLedStrip);
 
