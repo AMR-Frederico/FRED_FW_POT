@@ -2,6 +2,7 @@
 #include <Main/config.h>
 
 #include <Main/motor.h>
+#include <Main/led_strip.h>
 
 //@vel PWM signal between 0 and 1023 
 // postive our negative representes de direction, positive been forward
@@ -84,6 +85,8 @@ void cmdVelCB( const geometry_msgs::Twist& twist)
   pwm_left  = speed2pwm(left_wheel_data);
   pwm_right = speed2pwm(right_wheel_data);
 
+if(twist.linear.x > 10)
+  led_strip_controler(1);
 
   write_PWM(motor1,pwm_right);
   write_PWM(motor2,pwm_right);
