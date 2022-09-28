@@ -20,6 +20,11 @@ int pwm_left = 0  ;
 int speed_linear ;
 int speed_angular ; 
 
+void stop(motor motor){
+  digitalWrite(motor.In_A, HIGH);  
+  digitalWrite(motor.In_B, HIGH);
+  ledcWrite(motor.Canal ,0);
+}
 
 
 void write_PWM(motor motor, float vel){
@@ -34,8 +39,10 @@ void write_PWM(motor motor, float vel){
   }
   
   //send to H bridge 
-
-    if(vel >= 0)
+  if(vel == 0){
+    stop(motor);
+  }
+  else if(vel >= 0)
   {
     ledcWrite(motor.Canal ,vel);
     digitalWrite(motor.In_B, LOW);
@@ -59,12 +66,6 @@ int speed2pwm(int speed){
 }
 
 
-void stop(){
-  write_PWM(motor1,0);
-  write_PWM(motor2,0);
-  write_PWM(motor3,0);
-  write_PWM(motor4,0);
-}
 
 
 
