@@ -17,8 +17,8 @@ motor motor4(M4_IN1 ,M4_IN2,M4_PWM,4);
 
 int pwm_right = 0 ;
 int pwm_left = 0  ; 
-int speed_linear ;
-int speed_angular ; 
+float speed_linear ;
+float speed_angular ; 
 
 void stop(motor motor){
   digitalWrite(motor.In_A, HIGH);  
@@ -56,11 +56,11 @@ void write_PWM(motor motor, float vel){
   }
 }
 
-int speed2pwm(int speed){
+ float speed2pwm(float speed){
   //max_speed - max rpm
   //current_speed - desired rpm
   
-  int desired_rpm = (MAX_RPM*speed)/MAX_SPEED ; 
+  float desired_rpm = (MAX_RPM*speed)/MAX_SPEED ; 
 
   return desired_rpm ;
 }
@@ -73,40 +73,29 @@ int speed2pwm(int speed){
 //receive the twsit msg and figure out the speed of each wheel 
 void cmdVelCB( const geometry_msgs::Twist& twist)
 {
-  int gain = 1;
-  
-  //figure out speed for each wheell 
-  //figure out speed in m/s for each wheel 
 
   speed_angular = twist.angular.z;
   speed_linear  = twist.linear.x;
-
-  // float left_wheel_data  = gain*(twist.linear.x - twist.angular.z*L);
-  // float right_wheel_data = gain*(twist.linear.x + twist.angular.z*L);
-
-  // //convert speed from m/s to pwm 
-  // pwm_left  = speed2pwm(left_wheel_data);
-  // pwm_right = speed2pwm(right_wheel_data);
 
 if(twist.linear.x > 10)
   led_strip_controler(1);
 
 }
 
-int getLinear(){
+float getLinear(){
     return speed_linear;
 }
 
-int getAngular(){
+float getAngular(){
     return speed_angular;
 }
 
-int cinematic_left(int linear, int angular,int gain){
+float cinematic_left(float linear, float angular,int gain){
 
   return gain*(linear - angular*L);
 }
 
-int cinematic_right(int linear, int angular,int gain){
+float cinematic_right(float linear, float angular,int gain){
 
   return gain*(linear + angular*L);
 }

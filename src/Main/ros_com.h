@@ -35,6 +35,10 @@ bool rosConnected(ros::NodeHandle  nh,bool _connect){
     if(_connect != connected){
         _connect = connected;
         digitalWrite(LED_BUILD_IN,!connected);
+        led_strip_controler(1);
+    }
+    else{
+        led_strip_controler(0);
     }
     return connected;
 }

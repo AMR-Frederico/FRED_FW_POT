@@ -10,7 +10,7 @@
 #define CANAL_M4 3
 
 #define PWM_MIM 450
-#define PWM_MAX 1023
+#define PWM_MAX 800
 #define SATURATION 1020
 
 #define  FREQUENCIA 1000  

@@ -9,7 +9,7 @@ Adafruit_NeoPixel pixels(NUMPIXELS, LED_STRIP, NEO_GRB + NEO_KHZ800);
 
 // the setup routine runs once when you press reset:
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   pixels.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
   pixels.setBrightness(100); // not so bright
 }
