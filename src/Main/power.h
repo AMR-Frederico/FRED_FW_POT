@@ -4,6 +4,9 @@
 #include <Main/motor.h>
 #include <Main/led_strip.h>
 
+
+// fred(linear(m/s),angular(rad/s)) -> |cinematic| -> wheel(angular(rad/s)) -> |angular2rpm| -> wheel(angular(rpm)) -> |rpm2pwm| -> wheel(pwm)
+
 //@vel PWM signal between 0 and 1023 
 // postive our negative representes de direction, positive been forward
 
@@ -17,6 +20,9 @@ motor motor4(M4_IN1 ,M4_IN2,M4_PWM,4);
 
 int pwm_right = 0 ;
 int pwm_left = 0  ; 
+float rpm_right = 0 ;
+float rpm_left = 0;
+
 float speed_linear ;
 float speed_angular ; 
 
@@ -39,7 +45,7 @@ void write_PWM(motor motor, float vel){
   }
   
   //send to H bridge 
-  if(vel == 0){
+  if(vel >= -MIN_PWM && vel <= MIN_PWM){
     stop(motor);
   }
   else if(vel >= 0)
@@ -56,15 +62,32 @@ void write_PWM(motor motor, float vel){
   }
 }
 
- float speed2pwm(float speed){
-  //max_speed - max rpm
-  //current_speed - desired rpm
-  
-  float desired_rpm = (MAX_RPM*speed)/MAX_SPEED ; 
+ int rpm2pwm(float speed_rpm){
+  //scale convertion 
+  // rpm - min_rpm     pwm - min_pwm
+  // ------   =   --------------
+  // max_rpm     max_pwm - min_pwm
 
-  return desired_rpm ;
+  
+
+  float desired_pwm = 0;
+
+  desired_pwm = (((abs(speed_rpm) - MIN_RPM)*(MAX_PWM-MIN_PWM))/(MAX_RPM - MIN_RPM )) + MIN_PWM ;
+
+  if(speed_rpm <= 0 )
+    desired_pwm = desired_pwm*(-1);
+
+
+  return desired_pwm;
 }
 
+ float angular2rpm(float speed_angular){
+  //convert from angular w to rpm 
+  
+  float desired_rpm = (speed_angular*60)/(2*PI)  ;
+
+  return desired_rpm;
+}
 
 
 
@@ -77,8 +100,6 @@ void cmdVelCB( const geometry_msgs::Twist& twist)
   speed_angular = twist.angular.z;
   speed_linear  = twist.linear.x;
 
-if(twist.linear.x > 10)
-  led_strip_controler(1);
 
 }
 
@@ -90,20 +111,27 @@ float getAngular(){
     return speed_angular;
 }
 
-float cinematic_left(float linear, float angular,int gain){
+//return left wheel speed in radians/sec 
+float cinematic_left(float linear, float angular,float gain){
 
-  return gain*(linear - angular*L);
+  return gain*(linear + angular*(L/2))/RADIUS;
 }
 
-float cinematic_right(float linear, float angular,int gain){
+//return right wheel speed in radians/sec 
+float cinematic_right(float linear, float angular, float gain){
 
-  return gain*(linear + angular*L);
+  return (linear -   (angular*(L/2)))/RADIUS;
 }
 
-void write_all(int speed_left, int speed_right){
 
-  pwm_left  = speed2pwm(speed_left);
-  pwm_right = speed2pwm(speed_right);
+//recieve angular
+void write_all(int angular_speed_left, int angular_speed_right){
+
+  rpm_left = angular2rpm(angular_speed_left);
+  rpm_right = angular2rpm(angular_speed_right);
+
+  pwm_left  = rpm2pwm(rpm_left);
+  pwm_right = rpm2pwm(rpm_right);
 
   write_PWM(motor1,pwm_right);
   write_PWM(motor2,pwm_right);

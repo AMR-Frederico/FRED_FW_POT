@@ -7,7 +7,8 @@
 #include <Main/led_strip.h>
 
 const int ACC = 50 ;
-const int GAIN = 10 ;
+const int GAIN = 1 ;
+const int GAIN_ANGULAR = 7;
 
 bool _connect = false ;
 
@@ -26,24 +27,26 @@ void loop()
      if(!rosConnected(nh,_connect))
        write_all( 0,0);
 
-    ros_loop();
     
     nh.spinOnce();
 
-    float linear = getLinear();
-    float angular = getAngular();
+    float linear = getLinear();//robot
+    float angular = getAngular();//robot
 
-    float speed_left = cinematic_left(linear,angular,GAIN);
-    float speed_right = cinematic_right(linear,angular,GAIN);
+    angular = angular*GAIN_ANGULAR;
+    
+    float angular_speed_left = cinematic_left(linear,angular,GAIN); //wheel 
+    float angular_speed_right = cinematic_right(linear,angular,GAIN); //wheel
 
-    int controled_speed_left = speed_left ;
+    float controled_speed_left = angular_speed_left  ;
     // double controled_speed_left = rampa_profiler(speed_left,ACC) ;
 
-    int controled_speed_right = speed_right ;
+    float controled_speed_right = angular_speed_right ;
     // double controled_speed_right = rampa_profiler(speed_right,ACC);
     
     write_all( controled_speed_left,controled_speed_right);
 
+    ros_loop(angular_speed_right,angular_speed_left );
 }
 
 
