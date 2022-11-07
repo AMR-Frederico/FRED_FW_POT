@@ -29,20 +29,7 @@ void loop(){
     curEncoderAngle = encoder.readAngle(); //Encoder Read
     curAxisAngle = curEncoderAngle / encoderRatio;
 
-    Serial.print(" ");
-    Serial.print("|");
-    Serial.print("CURENcoderRPM : ");
-    Serial.print(curEncoderRPM);
-    Serial.print("|");
-    Serial.print(" curAxisRPM: ");
-    Serial.print(curAxisRPM);
-    Serial.print("|");
-    Serial.print(" curEncoderAngle: ");
-    Serial.print(curEncoderAngle);
-    Serial.print("|");
-    Serial.print(" curAxisAngle: ");
-    Serial.print(curAxisAngle);
-    Serial.println("");
+    encoder.debugPrint();
 
    
 
