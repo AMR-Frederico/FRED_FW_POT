@@ -10,7 +10,7 @@ volatile int DI_ENCODER_CH_A = 34;
 //--------------------------------------------------
 //Configuration
 //--------------------------------------------------
-int encoderPPR = 64;
+int encoderPPR = 70;
 volatile const long DEBOUNCE_TIME_HIGH = 200;
 volatile const long DEBOUNCE_TIME_LOW = 100;
 
@@ -109,22 +109,13 @@ void IRAM_ATTR Encoder::interruptionChA()
     }
     else
     {
-   
-
     prevA = curA;
 
-
     if (curA == true)
-    {
-        
-        encoderCount++;
-        
+    {   
+        encoderCount++;   
     }
-
     encoderPulseCount++;
-
-
-     
     }
 }
 

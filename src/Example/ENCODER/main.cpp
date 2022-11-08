@@ -31,6 +31,4 @@ void loop(){
 
     encoder.debugPrint();
 
-   
-
 }
