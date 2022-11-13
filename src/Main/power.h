@@ -46,16 +46,19 @@ void write_PWM(motor motor, float vel){
   
   //send to H bridge 
   if(vel >= -MIN_PWM && vel <= MIN_PWM){
+    led_strip_controler(2);
     stop(motor);
   }
   else if(vel >= 0)
-  {
+  { 
+    led_strip_controler(0);
     ledcWrite(motor.Canal ,vel);
     digitalWrite(motor.In_B, LOW);
     digitalWrite(motor.In_A, HIGH);  
   }
   else
-  {
+  {  
+    led_strip_controler(0);
      ledcWrite(motor.Canal,vel);
      digitalWrite(motor.In_B, HIGH);
      digitalWrite(motor.In_A, LOW);
