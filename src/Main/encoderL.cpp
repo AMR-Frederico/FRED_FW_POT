@@ -1,10 +1,10 @@
 
- #include "encoder.h" // header in local directory
-
+ #include "encoderL.h" // header in local directory
+ #include "config.h"
 //--------------------------------------------------
 //Pinout
 //--------------------------------------------------
-volatile int DI_ENCODER_CH_A = 34;
+volatile int DI_ENCODER_CH_A = ENCODER_LEFT;
 
 
 //--------------------------------------------------
@@ -68,11 +68,11 @@ volatile double curRPM_Filtered = 0;
 // Functions
 //--------------------------------------------------
 
-void IRAM_ATTR interruptionChA();
+void IRAM_ATTR interruptionChL();
 
 
 
-void Encoder::setup()
+void EncoderL::setup()
 {
     //Serial.println("EncSetup");
     
@@ -87,13 +87,13 @@ void Encoder::setup()
     
 
     //Configure Interrupt
-    attachInterrupt(digitalPinToInterrupt(DI_ENCODER_CH_A), interruptionChA, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(DI_ENCODER_CH_A), interruptionChL, CHANGE);
    
     
 }
 
 
-void IRAM_ATTR Encoder::interruptionChA()
+void IRAM_ATTR EncoderL::interruptionChL()
 {
 
     //Serial.println("A");
@@ -119,8 +119,11 @@ void IRAM_ATTR Encoder::interruptionChA()
     }
 }
 
+double EncoderL::readTicks(){
+    return encoderCount ;
+}
 
-double Encoder::readAngle()
+double EncoderL::readAngle()
 {
     curAngle = ((double)360.0 * (double)encoderCount) / (double)(encoderPPR);
     return curAngle;
@@ -128,7 +131,7 @@ double Encoder::readAngle()
 }
 
 
-double Encoder::readRPM()
+double EncoderL::readRPM()
 {
 
     noInterrupts(); //Disable interruptions - Critical code
@@ -149,7 +152,6 @@ double Encoder::readRPM()
         if (encoderDeltaCount != 0) //New pulses
         {
             
-            
             pulseDeltaTime = pulseTimeLatch - pulsePrevTime;
             
             if (pulseDeltaTime < 1) //Prevent division by 0
@@ -161,16 +163,7 @@ double Encoder::readRPM()
                 curRPM = (double)encoderDeltaCount*(1000000.0/(double)pulseDeltaTime)*60.0/2400.0;
             }
 
-            //Set flag to remember if going forward or backward
-            if (encoderDeltaCount>0)
-            {
-                lastPulseForward = true;
-                lastPulseBackward = false;
-            }else
-            {
-                lastPulseForward = false;
-                lastPulseBackward = true;
-            }
+            
             
         }
         else //No new pulses, use current time
@@ -186,11 +179,7 @@ double Encoder::readRPM()
                 curRPM = (double)1.0*(1000000.0/(double)pulseDeltaTime)*60.0/2400.0;
             }
 
-            if (lastPulseBackward)
-            {
-                curRPM = -curRPM;
-                
-            }
+            
 
         }
     }
@@ -236,7 +225,7 @@ double Encoder::readRPM()
 
 }
 
-void Encoder::reset()
+void EncoderL::reset()
 {
   encoderCount = 0;
   encoderErro = false;
@@ -249,7 +238,7 @@ void Encoder::reset()
 //--------------------------------------------------
 //Debug Print
 //--------------------------------------------------
-void Encoder:: debugPrint() {
+void EncoderL:: debugPrint() {
 
     Serial.print("|Encoder->");
 
@@ -265,7 +254,7 @@ void Encoder:: debugPrint() {
     Serial.print(encoderCount);
 
     Serial.print(", CurAngle:");
-    // Serial.print(curAngle);
+    Serial.print(curAngle);
 
     //---
 
@@ -287,11 +276,11 @@ void Encoder:: debugPrint() {
     // Serial.print(", P_DC:");
     // Serial.print(encoderDeltaCount);
 
-    Serial.print(", RPM:");
-    Serial.print(curRPM);
+    // Serial.print(", RPM:");
+    // Serial.print(curRPM);
 
-    // Serial.print(", RPM_F:");
-    // Serial.print(curRPM_Filtered);
+    Serial.print(", RPM_F:");
+    Serial.print(curRPM_Filtered);
     
     // Serial.print(", RPM_H:");
     // Serial.print(highestRPM);

@@ -16,7 +16,9 @@
 #define S2_M4 15
 #define PWM_M4 12
 
-const int freq = 100;
+const int freq = 1000;
+
+int vel = 45;
 
 const int ledChannel1 = 0;
 const int ledChannel2 = 1;
@@ -54,10 +56,10 @@ void setup()
   ledcAttachPin(PWM_M3, ledChannel3);
   ledcAttachPin(PWM_M4, ledChannel4);
 
-  ledcWrite(ledChannel2, 50);
-  ledcWrite(ledChannel1, 50);
-  ledcWrite(ledChannel3, 50);
-  ledcWrite(ledChannel4, 50);
+  ledcWrite(ledChannel2, vel);
+  ledcWrite(ledChannel1, vel);
+  ledcWrite(ledChannel3, vel);
+  ledcWrite(ledChannel4, vel);
 
   digitalWrite(S1_M1, 1); 
   digitalWrite(S1_M2, 1); 

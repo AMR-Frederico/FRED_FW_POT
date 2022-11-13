@@ -48,10 +48,12 @@
 #define  M4_IN2  15
 #define  M4_PWM  12
 
+#define ENCODER_RIGHT 39
+#define ENCODER_LEFT 36
 
 
 //debug led
 #define  LED_BUILD_IN  2
 
 #define  LED_STRIP  14
-#define NUMPIXELS   5
+#define NUMPIXELS   17

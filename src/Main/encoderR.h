@@ -1,22 +1,18 @@
-/*........................
-  Encoder Reading
-  Author: Andre Henning
-  Company: Control Robotics
- ...........................*/
+
 
 #ifndef ENCODER_H // include guard
 #define ENCODER_H
   
   #include <Arduino.h>
 
-  class Encoder
+  class EncoderR
   {
     public:
       void setup();
-      static  void IRAM_ATTR interruptionChA();
-      static  void IRAM_ATTR interruptionChB();
+      static  void IRAM_ATTR interruptionChR();
       double readAngle();
       double readRPM();
+      double readTicks();
       void debugPrint();
       void reset();
         

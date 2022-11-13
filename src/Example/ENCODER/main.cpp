@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 #include "encoder.h"
-Encoder encoder ;
+EncoderR encoder ;
 
 double curEncoderRPM ; 
 double encoderRatio = 1;

@@ -9,7 +9,7 @@
 // Subscribers ------------
 #define cmd_wheels_topic "cmd_wheels"
 #define cmd_right_wheel_topic "cmd_right_wheel"
-#define cmd_vel_topic "cmd_vel"
+#define cmd_vel_topic "cmd_vel/safe"
 #define cmd_led_strip_topic "cmd/led_strip/color"
 
 //Publisher 
@@ -21,6 +21,11 @@
 
 #define rpm_speed_right_topic "power/status/speed/rpm/right"
 #define rpm_speed_left_topic "power/status/speed/rpm/left"
+
+#define ticks_left_topic "power/status/distance/ticks/left"
+#define ticks_right_topic "power/status/distance/ticks/right"
+
+
 
 ros::NodeHandle  nh;
 
@@ -46,15 +51,23 @@ ros::Publisher subAngularSpeedLeft(angular_speed_left_topic, &angularSpeedLeftMs
 
 std_msgs::Float32 rpmSpeedLeftMsg ;
 ros::Publisher subRpmSpeedLeft(rpm_speed_left_topic, &rpmSpeedLeftMsg);
+
 std_msgs::Float32 rpmSpeedRightMsg ;
 ros::Publisher subRpmSpeedRight(rpm_speed_right_topic, &rpmSpeedRightMsg);
+
+std_msgs::Float32 ticksRightMsg ;
+ros::Publisher subTicksRight(ticks_right_topic, &ticksRightMsg);
+
+std_msgs::Float32 ticksLeftMsg ;
+ros::Publisher subTicksLeft(ticks_left_topic, &ticksLeftMsg);
+
 
 bool rosConnected(ros::NodeHandle  nh,bool _connect){
     bool connected = nh.connected();
     if(_connect != connected){
         _connect = connected;
         digitalWrite(LED_BUILD_IN,!connected);
-        led_strip_controler(!connected);
+       
     }
     
     return connected;
@@ -76,27 +89,36 @@ void ros_init(){
   
   nh.advertise(subRpmSpeedLeft);
   nh.advertise(subRpmSpeedRight);
+
+  nh.advertise(subTicksLeft);
+  nh.advertise(subTicksRight);
 }
 
-void ros_loop(float speed_right, float speed_left){
+void ros_loop(float speed_right, float speed_left,double angle_encoder_read_left, double angle_encoder_read_right,double rpm_encoder_read_left ,double rpm_encoder_read_right,double ticks_encoder_read_left,double ticks_encoder_read_right){
     pwmRightMsg.data = pwm_right;
     subPwmRight.publish(&pwmRightMsg);
 
     pwmLeftMsg.data = pwm_left;
     subPwmLeft.publish(&pwmLeftMsg);
 
-    angularSpeedLeftMsg.data = speed_left;
+    angularSpeedLeftMsg.data = angle_encoder_read_left;
     subAngularSpeedLeft.publish(&angularSpeedLeftMsg);
 
 
-    angularSpeedRightMsg.data = speed_right;
+    angularSpeedRightMsg.data = angle_encoder_read_right;
     subAngularSpeedRight.publish(&angularSpeedRightMsg);
 
-    rpmSpeedLeftMsg.data = rpm_left;
+    rpmSpeedLeftMsg.data = rpm_encoder_read_left;
     subRpmSpeedLeft.publish(&rpmSpeedLeftMsg);
 
-    rpmSpeedRightMsg.data = rpm_right;
+    rpmSpeedRightMsg.data = rpm_encoder_read_right;
     subRpmSpeedRight.publish(&rpmSpeedRightMsg);
+
+    ticksRightMsg.data = ticks_encoder_read_right;
+    subTicksRight.publish(&ticksRightMsg);
+
+    ticksLeftMsg.data = ticks_encoder_read_left;
+    subTicksLeft.publish(&ticksLeftMsg);
 
 
 }

@@ -14,11 +14,17 @@ int long blue = 0x0000FF ;
 
 
 void led_strip_controler_ros(const std_msgs::Float32& msg){
-    int color = msg.data;
+    float color = msg.data;
 
-    if(color != 0){
+    if(color == 1){
         pixels.fill(blue);
         pixels.show();
+    }
+    else if(color == 2){
+        
+        pixels.fill(red);
+        pixels.show();
+    
     }else{
         pixels.fill(0x000000);
         pixels.show();
