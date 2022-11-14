@@ -15,7 +15,7 @@ motor motor2(M2_IN1 ,M2_IN2,M2_PWM,1);
 motor motor3(M3_IN1 ,M3_IN2,M3_PWM,3);
 motor motor4(M4_IN1 ,M4_IN2,M4_PWM,4);
 
-
+bool debug = false;
 //Global 
 
 int pwm_right = 0 ;
@@ -46,18 +46,20 @@ void write_PWM(motor motor, float vel){
   
   //send to H bridge 
   if(vel >= -MIN_PWM && vel <= MIN_PWM){
+
+    if(debug)
     led_strip_controler(2);
     stop(motor);
   }
   else if(vel >= 0)
-  { 
+  { if(debug)
     led_strip_controler(0);
     ledcWrite(motor.Canal ,vel);
     digitalWrite(motor.In_B, LOW);
     digitalWrite(motor.In_A, HIGH);  
   }
   else
-  {  
+  {  if(debug)
     led_strip_controler(0);
      ledcWrite(motor.Canal,vel);
      digitalWrite(motor.In_B, HIGH);

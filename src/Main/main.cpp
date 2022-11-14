@@ -17,7 +17,7 @@ const int GAIN_ANGULAR = 7;
 
 bool _connect = false ;
 
-
+const int KP_BREAK = 20;
 
 void setup() { 
   ros_init();
