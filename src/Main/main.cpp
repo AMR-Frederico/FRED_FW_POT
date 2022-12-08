@@ -1,9 +1,7 @@
 
 #include <Main/config.h>
 #include <Main/ros_com.h>
-
 #include <Main/controler.h>
-
 #include <Main/led_strip.h>
 
 #include "encoderR.h"
@@ -16,6 +14,9 @@ const int GAIN = 1 ;
 const int GAIN_ANGULAR = 7;
 
 bool _connect = false ;
+
+float rpm_right = 0 ;
+float rpm_left = 0;
 
 
 
@@ -31,40 +32,60 @@ void setup() {
 
 void loop() 
 {   
-
+    //add conection protection 
      if(!rosConnected(nh,_connect))
-       write_all( 0,0);
+       write2motors( 0,0);
 
     
-    nh.spinOnce();
 
     float linear = getLinear();//robot
     float angular = getAngular();//robot
 
-    angular = angular*GAIN_ANGULAR;
+
+    //---------------------LEFT-------------------------------------------
     
-    float angular_speed_left = cinematic_left(linear,angular,GAIN); //wheel 
-    float angular_speed_right = cinematic_right(linear,angular,GAIN); //wheel
-
-    float controled_speed_left = angular_speed_left  ;
-    // double controled_speed_left = rampa_profiler(speed_left,ACC) ;
-
-    float controled_speed_right = angular_speed_right ;
-    // double controled_speed_right = rampa_profiler(speed_right,ACC);
-
+    //status -------encoder 
     double angle_encoder_read_left  = encoderLeft.readAngle();
-    double angle_encoder_read_right = encoderRight.readAngle();
 
     double rpm_encoder_read_left = encoderLeft.readRPM();
+
+    double ticks_encoder_read_left = encoderLeft.readTicks();
+
+    //cmd------ 
+
+    float angular_speed_left = cinematic_left(linear,angular,GAIN); //wheel [rad/s]
+
+    rpm_left = angular2rpm(angular_speed_left);// [RPM]
+
+    // float controled_speed_left = control.pid(input,kp,ki,kp) ; #output same unity [RPM]
+
+    float controled_RPM_left = rpm_left;
+
+
+    //------------------------------RIGHT-------------------------------------------
+
+    //status -- encoder 
+
+    double angle_encoder_read_right = encoderRight.readAngle();
 
     double rpm_encoder_read_right = encoderRight.readRPM();
 
     double ticks_encoder_read_right = encoderRight.readTicks();
 
-    double ticks_encoder_read_left = encoderLeft.readTicks();
-    
-    
-    write_all(controled_speed_left,controled_speed_right);
+    //cmd -- 
+
+    float angular_speed_right = cinematic_right(linear,angular,GAIN); //wheel [RAD/S]
+
+    float rpm_right = angular2rpm(angular_speed_right);   // [RPM]
+
+    float controled_RPM_right = rpm_right;
+
+  
+  //--------------------------execute-----------------
+
+
+    write2motors(controled_RPM_left,controled_RPM_right);
 
     ros_loop(angular_speed_right,angular_speed_left,angle_encoder_read_left,angle_encoder_read_right,rpm_encoder_read_left ,rpm_encoder_read_right,ticks_encoder_read_left,ticks_encoder_read_right);
+    nh.spinOnce();
 }
