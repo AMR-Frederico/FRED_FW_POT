@@ -63,6 +63,9 @@ volatile int filterGain_R = 20;
 volatile double curRPM_Filtered_R = 0;
 
 
+unsigned long lastDebounceTime = 0; 
+unsigned long debounceDelay = 100; //[micro seconds]
+
 
 //--------------------------------------------------
 // Functions
@@ -103,19 +106,28 @@ void IRAM_ATTR EncoderR::interruptionChR()
 
     curA_R = digitalRead(DI_ENCODER_CH_R);
 
-    if(curA_R == prevA_R)
-    {
-        //depois da interrupção, já leu e voltou ao valor anterior -> debounce = faz nada
-    }
-    else
-    {
-    prevA_R = curA_R;
+    // if(curA_R == prevA_R)
+    // {
+    //     //depois da interrupção, já leu e voltou ao valor anterior -> debounce = faz nada
+    // }
+    // else
+    // {
+    // prevA_R = curA_R;
 
-    if (curA_R == true)
-    {   
-        encoderCount_R++;   
-    }
-    encoderPulseCount_R++;
+    // if (curA_R == true)
+    // {   
+    //     encoderCount_R++;   
+    // }
+    // encoderPulseCount_R++;
+    // }
+
+    if (curA_R != prevA_R) {
+        if ((micros() - lastDebounceTime) > debounceDelay) {
+            prevA_R = curA_R ;
+            encoderCount_R++;
+            encoderPulseCount_R++;
+        }
+        lastDebounceTime = micros();
     }
 }
 
@@ -160,7 +172,7 @@ double EncoderR::readRPM()
             }
             else
             {
-                curRPM_R = (double)encoderDeltaCount_R*(1000000.0/(double)pulseDeltaTime_R)*60.0/2400.0;
+                curRPM_R = (double)encoderDeltaCount_R*(1000000.0/(double)pulseDeltaTime_R)*60.0/128;
             }
 
             
@@ -176,7 +188,7 @@ double EncoderR::readRPM()
             }
             else
             {
-                curRPM_R = (double)1.0*(1000000.0/(double)pulseDeltaTime_R)*60.0/2400.0;
+                curRPM_R = (double)1.0*(1000000.0/(double)pulseDeltaTime_R)*60.0/128.0;
             }
 
             

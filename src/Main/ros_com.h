@@ -1,14 +1,16 @@
 #include <ros.h>
+#include <std_msgs/Int32.h>
 #include <std_msgs/Int16.h>
 #include <std_msgs/Float32.h>
 #include <geometry_msgs/Twist.h>
+#include <Main/cinematic.h>
 
 #include <Main/power.h>
 #include <Main/led_strip.h>
 
 // Subscribers ------------
 #define cmd_wheels_topic "cmd_wheels"
-#define cmd_right_wheel_topic "cmd_right_wheel"
+#define cmd_rpm_topic "cmd/rpm"
 #define cmd_vel_topic "cmd_vel/safe"
 #define cmd_led_strip_topic "cmd/led_strip/color"
 
@@ -32,8 +34,10 @@ ros::NodeHandle  nh;
 //------------------SUBS--------------------
 //locomotion 
 ros::Subscriber<geometry_msgs::Twist> subCmdVel(cmd_vel_topic, cmdVelCB);
+ros::Subscriber<std_msgs::Int16> subCmd_RPM(cmd_rpm_topic, cmdRPMCB); 
 //lights 
 ros::Subscriber<std_msgs::Float32> subLedStrip(cmd_led_strip_topic, led_strip_controler_ros );
+
 
 //-----------------PUBS-------------------------
 
@@ -80,6 +84,8 @@ void ros_init(){
 
   nh.subscribe(subCmdVel);
   nh.subscribe(subLedStrip);
+  nh.subscribe(subCmd_RPM);
+
 
   nh.advertise(subPwmRight);
   nh.advertise(subPwmLeft);
