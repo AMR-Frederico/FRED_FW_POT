@@ -3,8 +3,8 @@
 #include <std_msgs/Int16.h>
 #include <std_msgs/Float32.h>
 #include <geometry_msgs/Twist.h>
-#include <Main/cinematic.h>
 
+#include <Main/cinematic.h>
 #include <Main/power.h>
 #include <Main/led_strip.h>
 

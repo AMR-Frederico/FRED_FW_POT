@@ -19,7 +19,7 @@ motor motor4(M4_IN1 ,M4_IN2,M4_PWM,4);
 
 int pwm_right = 0 ;
 int pwm_left = 0  ; 
-
+int pwm_motor = 0;
 
 
 
@@ -102,7 +102,7 @@ void write2motors(int rpm_left, int rpm_right){
 
 
 void write2motor(int rpm,int motor){
-  int pwm_motor = rpm2pwm(rpm);
+  pwm_motor = rpm2pwm(rpm);
 
   switch (motor)  {
     case 1:
