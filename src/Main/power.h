@@ -4,7 +4,6 @@
 #include <Main/motor.h>
 #include <Main/led_strip.h>
 
-
 // fred(linear(m/s),angular(rad/s)) -> |cinematic| -> wheel(angular(rad/s)) -> |angular2rpm| -> wheel(angular(rpm)) -> |rpm2pwm| -> wheel(pwm)
 
 //@vel PWM signal between 0 and 1023 
@@ -125,10 +124,6 @@ void write2motor(int rpm,int motor){
 
 }
 
-void cmdRPMCB(const std_msgs::Int16& msg){
-  
-  write2motor(msg.data,1);
 
-}
 
 
