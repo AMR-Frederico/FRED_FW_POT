@@ -27,6 +27,10 @@
 #define ticks_left_topic "power/status/distance/ticks/left"
 #define ticks_right_topic "power/status/distance/ticks/right"
 
+//debug
+#define rpm_controled_topic "power/status/debug/controler/rpm"
+#define pwm_debug_topic "power/status/debug/pwm"
+
 
 
 ros::NodeHandle  nh;
@@ -65,6 +69,11 @@ ros::Publisher subTicksRight(ticks_right_topic, &ticksRightMsg);
 std_msgs::Float32 ticksLeftMsg ;
 ros::Publisher subTicksLeft(ticks_left_topic, &ticksLeftMsg);
 
+std_msgs::Float32 rpmControledMsg ;
+ros::Publisher subControledRPM(rpm_controled_topic, &rpmControledMsg);
+std_msgs::Float32 pwmMsg ;
+ros::Publisher subPwm(pwm_debug_topic, &pwmMsg);
+
 
 bool rosConnected(ros::NodeHandle  nh,bool _connect){
     bool connected = nh.connected();
@@ -98,9 +107,12 @@ void ros_init(){
 
   nh.advertise(subTicksLeft);
   nh.advertise(subTicksRight);
+
+  nh.advertise(subControledRPM);
+  nh.advertise(subPwm);
 }
 
-void ros_loop(float speed_right, float speed_left,double angle_encoder_read_left, double angle_encoder_read_right,double rpm_encoder_read_left ,double rpm_encoder_read_right,double ticks_encoder_read_left,double ticks_encoder_read_right){
+void ros_loop(float speed_right, float speed_left,double angle_encoder_read_left, double angle_encoder_read_right,double rpm_encoder_read_left ,double rpm_encoder_read_right,double ticks_encoder_read_left,double ticks_encoder_read_right, float rpm_controled){
     pwmRightMsg.data = pwm_right;
     subPwmRight.publish(&pwmRightMsg);
 
@@ -125,6 +137,11 @@ void ros_loop(float speed_right, float speed_left,double angle_encoder_read_left
 
     ticksLeftMsg.data = ticks_encoder_read_left;
     subTicksLeft.publish(&ticksLeftMsg);
+
+    rpmControledMsg.data = rpm_controled;
+    subControledRPM.publish(&rpmControledMsg);
+    pwmMsg.data = pwm_motor;
+    subPwm.publish(&pwmMsg);
 
 
 }

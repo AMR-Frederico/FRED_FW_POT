@@ -10,6 +10,10 @@ EncoderR encoderRight;
 #include "encoderL.h"
 EncoderL encoderLeft;
 
+#include "controler.h"
+Controler esquerda_controler(1,1,1);
+Controler direita_controler(10,1,1);
+
 const int ACC = 50 ;
 const int GAIN = 1 ;
 const int GAIN_ANGULAR = 7;
@@ -20,6 +24,7 @@ float rpm_right = 0 ;
 float rpm_left = 0;
 
 int rpm = 0;
+int rpm_controled = 0;
 
 bool debug = true;
 
@@ -88,7 +93,9 @@ void loop()
   //----------------debug------------------------------
     if(debug){
     rpm = getRPMsetpoint();
+    rpm_controled =direita_controler.output(rpm,rpm_encoder_read_right);
     write2motor(rpm,4);
+    write2motor(rpm_controled,4);
     }
   //--------------------------execute-----------------
 
@@ -97,6 +104,6 @@ void loop()
     }
 
 
-    ros_loop(angular_speed_right,angular_speed_left,angle_encoder_read_left,angle_encoder_read_right,rpm_encoder_read_left ,rpm_encoder_read_right,ticks_encoder_read_left,ticks_encoder_read_right);
+    ros_loop(angular_speed_right,angular_speed_left,angle_encoder_read_left,angle_encoder_read_right,rpm_encoder_read_left ,rpm_encoder_read_right,ticks_encoder_read_left,ticks_encoder_read_right,rpm_controled);
     nh.spinOnce();
 }

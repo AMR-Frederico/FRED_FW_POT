@@ -1,7 +1,8 @@
 #include <Main/config.h>
+#ifndef CONTROLER // include guard
+#define CONTROLER
 
-
-class controler
+class Controler
 {
 private:
     float proporcional();
@@ -15,32 +16,12 @@ public:
     float time; 
     float output_value;
 
-    controler(float kp, float kd, float ki);
+    Controler(float kp, float kd, float ki);
     float output(float input_value, float current_value);
 
 
 };
-
-controler::controler(float kp, float kd, float ki)
-{   KP = kp;
-    KD = kd;
-    KI = ki;
-}
-
-float controler::output(float input_value, float current_value){
-    error = current_value - input_value;
-    time = micros();
-    output_value = proporcional();
-
-}
-
-float controler::proporcional(){
-    return error*KP; 
-
-}
-
-
-
+#endif
 
 
 

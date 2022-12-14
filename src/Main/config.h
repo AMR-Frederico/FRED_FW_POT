@@ -15,7 +15,7 @@
 #define RADIUS 0.075
 
 #define MAX_PWM 1023
-#define MIN_PWM 450
+#define MIN_PWM 0
 
 #define MAX_RPM 1600
 #define MIN_RPM 0
