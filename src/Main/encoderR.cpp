@@ -63,8 +63,8 @@ volatile int filterGain_R = 20;
 volatile double curRPM_Filtered_R = 0;
 
 
-unsigned long lastDebounceTime = 0; 
-unsigned long debounceDelay = 100; //[micro seconds]
+unsigned long lastDebounceTime_R = 0; 
+unsigned long debounceDelay_R = 100; //[micro seconds]
 
 
 //--------------------------------------------------
@@ -122,12 +122,12 @@ void IRAM_ATTR EncoderR::interruptionChR()
     // }
 
     if (curA_R != prevA_R) {
-        if ((micros() - lastDebounceTime) > debounceDelay) {
+        if ((micros() - lastDebounceTime_R) > debounceDelay_R) {
             prevA_R = curA_R ;
             encoderCount_R++;
             encoderPulseCount_R++;
         }
-        lastDebounceTime = micros();
+        lastDebounceTime_R = micros();
     }
 }
 

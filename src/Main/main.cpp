@@ -11,7 +11,7 @@ EncoderR encoderRight;
 EncoderL encoderLeft;
 
 #include "controler.h"
-Controler esquerda_controler(1,1,1);
+Controler esquerda_controler(10,1,1);
 Controler direita_controler(10,1,1);
 
 const int ACC = 50 ;
@@ -26,7 +26,7 @@ float rpm_left = 0;
 int rpm = 0;
 int rpm_controled = 0;
 
-bool debug = true;
+bool debug = false;
 
 
 
@@ -69,8 +69,8 @@ void loop()
 
     // float controled_speed_left = control.pid(input,kp,ki,kp) ; #output same unity [RPM]
 
-    float controled_RPM_left = rpm_left;
-
+    // float controled_RPM_left = rpm_left;
+    float controled_RPM_left = esquerda_controler.output(rpm_left,rpm_encoder_read_left);
 
     //------------------------------RIGHT-------------------------------------------
 
@@ -88,7 +88,8 @@ void loop()
 
     float rpm_right = angular2rpm(angular_speed_right);   // [RPM]
 
-    float controled_RPM_right = rpm_right;
+    // float controled_RPM_right = rpm_right;
+    float controled_RPM_right = direita_controler.output(rpm_right,rpm_encoder_read_right);
 
   //----------------debug------------------------------
     if(debug){
