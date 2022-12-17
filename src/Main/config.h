@@ -48,8 +48,8 @@
 #define  M4_IN2  15
 #define  M4_PWM  12
 
-#define ENCODER_RIGHT 39
-#define ENCODER_LEFT 36
+#define ENCODER_RIGHT 36
+#define ENCODER_LEFT 39
 
 
 //debug led
