@@ -3,6 +3,7 @@
 
 #include <Main/motor.h>
 #include <Main/led_strip.h>
+#include <Main/tools.h>
 
 // fred(linear(m/s),angular(rad/s)) -> |cinematic| -> wheel(angular(rad/s)) -> |angular2rpm| -> wheel(angular(rpm)) -> |rpm2pwm| -> wheel(pwm)
 
@@ -92,6 +93,9 @@ void write2motors(int rpm_left, int rpm_right){
 
   pwm_left  = rpm2pwm(rpm_left);
   pwm_right = rpm2pwm(rpm_right);
+
+  pwm_left = saturation_under(pwm_left,PWM_SATURATION_UNDER);
+  pwm_right = saturation_under(pwm_right,PWM_SATURATION_UNDER);
 
   write_PWM(motor1,pwm_left); 
   write_PWM(motor2,pwm_right); 

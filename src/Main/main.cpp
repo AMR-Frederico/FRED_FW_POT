@@ -11,8 +11,8 @@ EncoderR encoderRight;
 EncoderL encoderLeft;
 
 #include "controler.h"
-Controler esquerda_controler(10,1,1);
-Controler direita_controler(10,1,1);
+Controler esquerda_controler(5,1,1);
+Controler direita_controler(5,1,1);
 
 const int ACC = 50 ;
 const int GAIN = 1 ;
@@ -94,7 +94,7 @@ void loop()
   //----------------debug------------------------------
     if(debug){
     rpm = getRPMsetpoint();
-    rpm_controled =direita_controler.output(rpm,rpm_encoder_read_right);
+    rpm_controled =direita_controler.output(rpm,rpm_encoder_read_left);
     write2motor(rpm,4);
     write2motor(rpm_controled,4);
     }
