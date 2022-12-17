@@ -1,5 +1,5 @@
 #include "controler.h"
-#include "tools.h"
+// #include <Main/tools.h>
 
 Controler::Controler(float kp, float kd, float ki)
 {   KP = kp;
@@ -14,11 +14,11 @@ Controler::Controler(float kp, float kd, float ki)
 float Controler::output(float input_value, float current_value){
     error =  input_value - current_value ;
     time = micros();
-    delta_time = time - last_time;
+    delta_time = time - last_time + 10;
 
     output_value =  proporcional() + integrative();
 
-    output_value = saturation(output_value,1000);
+    // output_value = saturation(output_value,1000);
 
     last_time = time;
     return output_value;
@@ -32,7 +32,7 @@ float Controler::proporcional(){
 
 float Controler::integrative(){
     integral = delta_time*error*KI ;
-    integral = saturation(integral,1000);
+    // integral = saturation(integral,1000);
     return integral ;
 
 }

@@ -15,8 +15,8 @@ MedianFilter encoderLeftFilter(33,0);
 
 
 #include "controler.h"
-Controler esquerda_controler(2,1,0.001);
-Controler direita_controler(2,1,0.001);
+Controler esquerda_controler(2,1,0.0001);
+Controler direita_controler(2,1,0.0001);
 
 const int ACC = 50 ;
 const int GAIN = 1 ;

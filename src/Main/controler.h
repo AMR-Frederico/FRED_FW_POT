@@ -17,7 +17,7 @@ public:
     float integral;
     unsigned long time; 
     unsigned long last_time;
-    float delta_time;
+    unsigned long  delta_time;
 
     Controler(float kp, float kd, float ki);
     float output(float input_value, float current_value);
