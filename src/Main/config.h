@@ -58,4 +58,4 @@
 #define  LED_STRIP  14
 #define NUMPIXELS   17
 
-#define  PWM_SATURATION_UNDER -50
+#define  PWM_SATURATION_UNDER -20

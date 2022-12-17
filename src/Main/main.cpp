@@ -4,15 +4,19 @@
 #include <Main/controler.h>
 #include <Main/led_strip.h>
 
+#include "MedianFilter.h"
 
 #include "encoderR.h"
 EncoderR encoderRight;
+MedianFilter encoderRightFilter(33,0);
 #include "encoderL.h"
 EncoderL encoderLeft;
+MedianFilter encoderLeftFilter(33,0);
+
 
 #include "controler.h"
-Controler esquerda_controler(5,1,1);
-Controler direita_controler(5,1,1);
+Controler esquerda_controler(2,1,0.001);
+Controler direita_controler(2,1,0.001);
 
 const int ACC = 50 ;
 const int GAIN = 1 ;
@@ -58,6 +62,9 @@ void loop()
     double angle_encoder_read_left  = encoderLeft.readAngle();
 
     double rpm_encoder_read_left = encoderLeft.readRPM();
+    encoderLeftFilter.in(rpm_encoder_read_left);
+
+    rpm_encoder_read_left = encoderLeftFilter.out();
 
     double ticks_encoder_read_left = encoderLeft.readTicks();
 
@@ -79,6 +86,8 @@ void loop()
     double angle_encoder_read_right = encoderRight.readAngle();
 
     double rpm_encoder_read_right = encoderRight.readRPM();
+    encoderRightFilter.in(rpm_encoder_read_right);
+    rpm_encoder_read_right = encoderRightFilter.out();
 
     double ticks_encoder_read_right = encoderRight.readTicks();
 
