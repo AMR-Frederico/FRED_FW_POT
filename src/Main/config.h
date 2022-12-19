@@ -17,7 +17,7 @@
 #define MAX_PWM 1023
 #define MIN_PWM 0
 
-#define MAX_RPM 1600
+#define MAX_RPM 1000
 #define MIN_RPM 0
 
 #define MAX_SPEED_LINEAR 10 //m/s 
@@ -58,4 +58,4 @@
 #define  LED_STRIP  14
 #define NUMPIXELS   17
 
-#define  PWM_SATURATION_UNDER -20
+#define  PWM_SATURATION_UNDER 0

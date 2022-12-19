@@ -15,8 +15,8 @@ MedianFilter encoderLeftFilter(33,0);
 
 
 #include "controler.h"
-Controler esquerda_controler(2,1,0.0001);
-Controler direita_controler(2,1,0.0001);
+Controler esquerda_controler(0.4,0.01,0.008);
+Controler  direita_controler(0.4,0.01,0.008);
 
 const int ACC = 50 ;
 const int GAIN = 1 ;
@@ -73,7 +73,7 @@ void loop()
     float angular_speed_left = cinematic_left(linear,angular,GAIN); //wheel [rad/s]
 
     rpm_left = angular2rpm(angular_speed_left);// [RPM]
-
+    rpm_left =  saturation(rpm_left,800);
     // float controled_speed_left = control.pid(input,kp,ki,kp) ; #output same unity [RPM]
 
     // float controled_RPM_left = rpm_left;
@@ -95,8 +95,8 @@ void loop()
 
     float angular_speed_right = cinematic_right(linear,angular,GAIN); //wheel [RAD/S]
 
-    float rpm_right = angular2rpm(angular_speed_right);   // [RPM]
-
+    rpm_right = angular2rpm(angular_speed_right);   // [RPM]
+    rpm_right = saturation(rpm_right,800);
     // float controled_RPM_right = rpm_right;
     float controled_RPM_right = direita_controler.output(rpm_right,rpm_encoder_read_right);
 
@@ -114,6 +114,11 @@ void loop()
     }
 
 
-    ros_loop(angular_speed_right,angular_speed_left,angle_encoder_read_left,angle_encoder_read_right,rpm_encoder_read_left ,rpm_encoder_read_right,ticks_encoder_read_left,ticks_encoder_read_right,rpm_controled);
+    ros_loop(angular_speed_right,        angular_speed_left,
+             angle_encoder_read_left,    angle_encoder_read_right,
+             rpm_encoder_read_left ,     rpm_encoder_read_right,
+             ticks_encoder_read_left,    ticks_encoder_read_right,
+             rpm_controled,              
+             controled_RPM_left,         rpm_left);
     nh.spinOnce();
 }

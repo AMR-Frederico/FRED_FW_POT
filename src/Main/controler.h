@@ -13,6 +13,8 @@ public:
     float KD;
     float KI;
     float error;
+    float last_error;
+    float delta_error;
     float output_value;
     float integral;
     unsigned long time; 

@@ -27,6 +27,10 @@
 #define ticks_left_topic "power/status/distance/ticks/left"
 #define ticks_right_topic "power/status/distance/ticks/right"
 
+#define seted_rpm_left_topic "power/status/seted/speed/rpm/left"
+#define seted_rpm_right_topic "power/status/seted/speed/rpm/right"
+
+
 //debug
 #define rpm_controled_topic "power/status/debug/controler/rpm"
 #define pwm_debug_topic "power/status/debug/pwm"
@@ -69,6 +73,15 @@ ros::Publisher subTicksRight(ticks_right_topic, &ticksRightMsg);
 std_msgs::Float32 ticksLeftMsg ;
 ros::Publisher subTicksLeft(ticks_left_topic, &ticksLeftMsg);
 
+std_msgs::Float32 setedRpmLeftMsg ;
+ros::Publisher subSetedRpmLeft(seted_rpm_left_topic, &setedRpmLeftMsg);
+std_msgs::Float32 setedRpmRightMsg ;
+ros::Publisher subSetedRpmRight(seted_rpm_right_topic, &setedRpmRightMsg);
+
+
+
+// debug
+
 std_msgs::Float32 rpmControledMsg ;
 ros::Publisher subControledRPM(rpm_controled_topic, &rpmControledMsg);
 std_msgs::Float32 pwmMsg ;
@@ -108,11 +121,16 @@ void ros_init(){
   nh.advertise(subTicksLeft);
   nh.advertise(subTicksRight);
 
+  nh.advertise(subSetedRpmRight);
+  nh.advertise(subSetedRpmLeft);
+
   nh.advertise(subControledRPM);
   nh.advertise(subPwm);
 }
 
-void ros_loop(float speed_right, float speed_left,double angle_encoder_read_left, double angle_encoder_read_right,double rpm_encoder_read_left ,double rpm_encoder_read_right,double ticks_encoder_read_left,double ticks_encoder_read_right, float rpm_controled){
+void ros_loop(float speed_right, float speed_left,double angle_encoder_read_left, double angle_encoder_read_right,double rpm_encoder_read_left ,double rpm_encoder_read_right
+            ,double ticks_encoder_read_left,double ticks_encoder_read_right, float rpm_controled,float rpm_right, 
+            float rpm_left){
     pwmRightMsg.data = pwm_right;
     subPwmRight.publish(&pwmRightMsg);
 
@@ -142,6 +160,12 @@ void ros_loop(float speed_right, float speed_left,double angle_encoder_read_left
     subControledRPM.publish(&rpmControledMsg);
     pwmMsg.data = pwm_motor;
     subPwm.publish(&pwmMsg);
+
+    setedRpmLeftMsg.data = rpm_left;
+    subSetedRpmLeft.publish(&setedRpmLeftMsg);
+    setedRpmRightMsg.data = rpm_right;
+    subSetedRpmRight.publish(&setedRpmRightMsg);
+
 
 
 }
