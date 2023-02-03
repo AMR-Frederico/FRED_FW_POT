@@ -18,7 +18,7 @@
 
 const int freq = 1000;
 
-int vel = 45;
+int vel = 100;
 
 const int ledChannel1 = 0;
 const int ledChannel2 = 1;
