@@ -6,12 +6,13 @@
 
 #include "MedianFilter.h"
 
-#include "encoderR.h"
-EncoderR encoderRight;
+#include "encoder.h"
+Encoder encoderRight(36,39);
 MedianFilter encoderRightFilter(33,0);
-#include "encoderL.h"
-EncoderL encoderLeft;
-MedianFilter encoderLeftFilter(33,0);
+
+// #include "encoderL.h"
+// EncoderL encoderLeft;
+// MedianFilter encoderLeftFilter(33,0);
 
 
 #include "controler.h"
@@ -37,7 +38,7 @@ bool debug = false;
 void setup() { 
   ros_init();
   led_strip_init();
-  encoderLeft.setup();
+  // encoderLeft.setup();
   encoderRight.setup();
   pinMode(LED_BUILD_IN,OUTPUT);
   digitalWrite(LED_BUILD_IN,HIGH);
@@ -59,14 +60,14 @@ void loop()
     //---------------------LEFT-------------------------------------------
     
     //status -------encoder 
-    double angle_encoder_read_left  = encoderLeft.readAngle();
+    // double angle_encoder_read_left  = encoderLeft.readAngle();
 
-    double rpm_encoder_read_left = encoderLeft.readRPM();
-    encoderLeftFilter.in(rpm_encoder_read_left);
+    // double rpm_encoder_read_left = encoderLeft.readRPM();
+    // encoderLeftFilter.in(rpm_encoder_read_left);
 
-    rpm_encoder_read_left = encoderLeftFilter.out();
+    // rpm_encoder_read_left = encoderLeftFilter.out();
 
-    double ticks_encoder_read_left = encoderLeft.readTicks();
+    // double ticks_encoder_read_left = encoderLeft.readTicks();
 
     //cmd------ 
 
@@ -77,7 +78,7 @@ void loop()
     // float controled_speed_left = control.pid(input,kp,ki,kp) ; #output same unity [RPM]
 
     // float controled_RPM_left = rpm_left;
-    float controled_RPM_left = esquerda_controler.output(rpm_left,rpm_encoder_read_left);
+    float controled_RPM_left = esquerda_controler.output(rpm_left,0);
 
     //------------------------------RIGHT-------------------------------------------
 
@@ -89,7 +90,7 @@ void loop()
     encoderRightFilter.in(rpm_encoder_read_right);
     rpm_encoder_read_right = encoderRightFilter.out();
 
-    double ticks_encoder_read_right = encoderRight.readTicks();
+    double ticks_encoder_read_right = encoderRight.readPulses();
 
     //cmd -- 
 
@@ -103,7 +104,7 @@ void loop()
   //----------------debug------------------------------
     if(debug){
     rpm = getRPMsetpoint();
-    rpm_controled =direita_controler.output(rpm,rpm_encoder_read_left);
+    rpm_controled =direita_controler.output(rpm,0);
     write2motor(rpm,4);
     write2motor(rpm_controled,4);
     }
@@ -115,9 +116,9 @@ void loop()
 
 
     ros_loop(angular_speed_right,        angular_speed_left,
-             angle_encoder_read_left,    angle_encoder_read_right,
-             rpm_encoder_read_left ,     rpm_encoder_read_right,
-             ticks_encoder_read_left,    ticks_encoder_read_right,
+             0,    angle_encoder_read_right,
+             0 ,     rpm_encoder_read_right,
+             0,    ticks_encoder_read_right,
              rpm_controled,              
              controled_RPM_left,         rpm_left);
     nh.spinOnce();
