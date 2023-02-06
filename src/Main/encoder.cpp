@@ -1,8 +1,4 @@
-/*........................
-  Encoder Reading
-  Author: Andre Henning
-  Company: Control Robotics
- ...........................*/
+
 
  #include "encoder.h" // header in local directory
 
@@ -74,7 +70,7 @@ volatile double curRPM_Filtered = 0;
 void IRAM_ATTR interruptionChA();
 void IRAM_ATTR interruptionChB();
 
-Encoder::Encoder(int pin_A,int pin_B){
+Encoder::Encoder(uint8_t pin_A,uint8_t pin_B){
     DI_ENCODER_CH_A = pin_A;
     DI_ENCODER_CH_B = pin_B;
 
