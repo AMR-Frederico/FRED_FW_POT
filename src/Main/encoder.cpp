@@ -70,7 +70,7 @@ volatile double curRPM_Filtered = 0;
 void IRAM_ATTR interruptionChA();
 void IRAM_ATTR interruptionChB();
 
-Encoder::Encoder(uint8_t pin_A,uint8_t pin_B){
+Encoder::Encoder(int pin_A,int pin_B){
     DI_ENCODER_CH_A = pin_A;
     DI_ENCODER_CH_B = pin_B;
 

@@ -8,12 +8,12 @@
   class Encoder
   {
     public:
-      Encoder(uint8_t pin_A,uint8_t pin_B);
+      Encoder( int pin_A, int pin_B);
       void setup();
       static  void IRAM_ATTR interruptionChA();
       static  void IRAM_ATTR interruptionChB();
-      uint8_t DI_ENCODER_CH_A;
-      uint8_t DI_ENCODER_CH_B;
+      static int DI_ENCODER_CH_A;
+      static int DI_ENCODER_CH_B;
       double readPulses();
       double readAngle();
       double readRPM();
