@@ -10,18 +10,20 @@
     public:
       Encoder( int pin_A, int pin_B);
       void setup();
-      void IRAM_ATTR interruptionChA();
-      void IRAM_ATTR interruptionChB();
-      int DI_ENCODER_CH_A;
-      int DI_ENCODER_CH_B;
       double readPulses();
       double readAngle();
       double readRPM();
       void debugPrint();
       void reset();
+      int DI_ENCODER_CH_A;
+      int DI_ENCODER_CH_B;
         
     private:
-      
+      static void IRAM_ATTR interruptionChA();
+      static void IRAM_ATTR interruptionChB();
+
+      // objeto que representa a classe Encoder
+      static Encoder* obj_Encoder; 
 
   };
 

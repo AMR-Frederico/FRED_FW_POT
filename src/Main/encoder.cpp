@@ -8,12 +8,12 @@
 // volatile int DI_ENCODER_CH_A = 36;
 // volatile int DI_ENCODER_CH_B = 39;
 
-
 //--------------------------------------------------
 //Configuration
 //--------------------------------------------------
 int encoderPPR = 600;
 
+Encoder* Encoder::obj_Encoder = 0;
 
 //--------------------------------------------------
 //Variable Declaration/Initialization
@@ -71,8 +71,8 @@ void IRAM_ATTR interruptionChA();
 void IRAM_ATTR interruptionChB();
 
 Encoder::Encoder(int pin_A,int pin_B){
-    DI_ENCODER_CH_A = pin_A;
-    DI_ENCODER_CH_B = pin_B;
+    this->DI_ENCODER_CH_A = pin_A;
+    this->DI_ENCODER_CH_B = pin_B;
 
 }
 
@@ -91,9 +91,11 @@ void Encoder::setup()
     prevA = curA;
     prevB = curB;
 
+    obj_Encoder = this;
+
     //Configure Interrupt
-    attachInterrupt(DI_ENCODER_CH_A, (void(*)() )interruptionChA, CHANGE);
-    attachInterrupt(DI_ENCODER_CH_B, (void(*)() )interruptionChB, CHANGE);
+    attachInterrupt(DI_ENCODER_CH_A, Encoder::interruptionChA, CHANGE);
+    attachInterrupt(DI_ENCODER_CH_B, Encoder::interruptionChB, CHANGE);
     
 }
 
@@ -106,7 +108,7 @@ void IRAM_ATTR Encoder::interruptionChA()
 
     pulseTime = micros();
 
-    curA = digitalRead(DI_ENCODER_CH_A);
+    curA = digitalRead(obj_Encoder-> DI_ENCODER_CH_A);
 
     if(curA == prevA)
     {
@@ -114,7 +116,7 @@ void IRAM_ATTR Encoder::interruptionChA()
     }
     else
     {
-    curB = digitalRead(DI_ENCODER_CH_B);
+    curB = digitalRead(obj_Encoder->DI_ENCODER_CH_B);
 
     if (curB != prevB){
         encoderErro = true;
@@ -174,7 +176,7 @@ void IRAM_ATTR Encoder::interruptionChB()
 
     pulseTime = micros();
 
-    curB = digitalRead(DI_ENCODER_CH_B);
+    curB = digitalRead(obj_Encoder->DI_ENCODER_CH_B);
 
     if(curB == prevB)
     {
@@ -183,7 +185,7 @@ void IRAM_ATTR Encoder::interruptionChB()
     else
     {
 
-    curA = digitalRead(DI_ENCODER_CH_A);
+    curA = digitalRead(obj_Encoder->DI_ENCODER_CH_A);
 
     if (curA != prevA){
         encoderErro = true;
