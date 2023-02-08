@@ -92,8 +92,8 @@ void Encoder::setup()
     prevB = curB;
 
     //Configure Interrupt
-    attachInterrupt(DI_ENCODER_CH_A, interruptionChA, CHANGE);
-    attachInterrupt(DI_ENCODER_CH_B, interruptionChB, CHANGE);
+    attachInterrupt(DI_ENCODER_CH_A, (void(*)() )interruptionChA, CHANGE);
+    attachInterrupt(DI_ENCODER_CH_B, (void(*)() )interruptionChB, CHANGE);
     
 }
 

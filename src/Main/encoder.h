@@ -10,10 +10,10 @@
     public:
       Encoder( int pin_A, int pin_B);
       void setup();
-      static  void IRAM_ATTR interruptionChA();
-      static  void IRAM_ATTR interruptionChB();
-      static int DI_ENCODER_CH_A;
-      static int DI_ENCODER_CH_B;
+      void IRAM_ATTR interruptionChA();
+      void IRAM_ATTR interruptionChB();
+      int DI_ENCODER_CH_A;
+      int DI_ENCODER_CH_B;
       double readPulses();
       double readAngle();
       double readRPM();
