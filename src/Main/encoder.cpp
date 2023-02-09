@@ -28,7 +28,7 @@ volatile unsigned long interr_deltaTime_us = 0;
 volatile unsigned long interr_highestTime_us = 0;
 
 //Pulse Counter
-volatile bool curA, curB, prevA, prevB;
+volatile bool curA, curB, prevA, prevB; 
 
 volatile unsigned long pulseTime = 0;
 volatile double encoderCount = 0;

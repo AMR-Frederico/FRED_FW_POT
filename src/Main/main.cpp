@@ -8,6 +8,8 @@
 
 #include "encoder.h"
 Encoder encoderRight(36,39);
+Encoder encoderLeft(35,34);
+
 MedianFilter encoderRightFilter(33,0);
 
 // #include "encoderL.h"
