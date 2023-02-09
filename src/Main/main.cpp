@@ -11,14 +11,11 @@ Encoder encoderRight(36,39);
 Encoder encoderLeft(35,34);
 
 MedianFilter encoderRightFilter(33,0);
-
-// #include "encoderL.h"
-// EncoderL encoderLeft;
-// MedianFilter encoderLeftFilter(33,0);
+MedianFilter encoderLeftFilter(33,0);
 
 
 #include "controler.h"
-Controler esquerda_controler(0.4,0.01,0.008);
+Controler  esquerda_controler(0.4,0.01,0.008);
 Controler  direita_controler(0.4,0.01,0.008);
 
 const int ACC = 50 ;
@@ -40,7 +37,7 @@ bool debug = false;
 void setup() { 
   ros_init();
   led_strip_init();
-  // encoderLeft.setup();
+  encoderLeft.setup();
   encoderRight.setup();
   pinMode(LED_BUILD_IN,OUTPUT);
   digitalWrite(LED_BUILD_IN,HIGH);
@@ -61,17 +58,17 @@ void loop()
 
     //---------------------LEFT-------------------------------------------
     
-    //status -------encoder 
-    // double angle_encoder_read_left  = encoderLeft.readAngle();
+    // status -------encoder 
+    double angle_encoder_read_left  = encoderLeft.readAngle();
 
-    // double rpm_encoder_read_left = encoderLeft.readRPM();
-    // encoderLeftFilter.in(rpm_encoder_read_left);
+    double rpm_encoder_read_left = encoderLeft.readRPM();
+    encoderLeftFilter.in(rpm_encoder_read_left);
 
-    // rpm_encoder_read_left = encoderLeftFilter.out();
+    rpm_encoder_read_left = encoderLeftFilter.out();
 
-    // double ticks_encoder_read_left = encoderLeft.readTicks();
+    double ticks_encoder_read_left = encoderLeft.readPulses();
 
-    //cmd------ 
+    // cmd------ 
 
     float angular_speed_left = cinematic_left(linear,angular,GAIN); //wheel [rad/s]
 
@@ -118,10 +115,10 @@ void loop()
 
 
     ros_loop(angular_speed_right,        angular_speed_left,
-             0,    angle_encoder_read_right,
-             0 ,     rpm_encoder_read_right,
-             0,    ticks_encoder_read_right,
+             angle_encoder_read_left,    angle_encoder_read_right,
+             rpm_encoder_read_left ,     rpm_encoder_read_right,
+             ticks_encoder_read_left,    ticks_encoder_read_right,
              rpm_controled,              
-             controled_RPM_left,         rpm_left);
+             controled_RPM_left,  rpm_left);
     nh.spinOnce();
 }

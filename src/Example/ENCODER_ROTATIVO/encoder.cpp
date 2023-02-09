@@ -9,8 +9,16 @@
 //--------------------------------------------------
 //Pinout
 //--------------------------------------------------
+
+//direita 
 volatile int DI_ENCODER_CH_A = 36;
 volatile int DI_ENCODER_CH_B = 39;
+
+//esquerda
+// volatile int DI_ENCODER_CH_A = 34;
+// volatile int DI_ENCODER_CH_B = 35;
+
+
 
 
 //--------------------------------------------------
