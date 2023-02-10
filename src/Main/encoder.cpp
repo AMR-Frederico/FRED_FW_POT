@@ -3,7 +3,7 @@
  #include "encoder.h" // header in local directory
 
 //--------------------------------------------------
-//Pinout
+//Pinout - LEGADO
 //--------------------------------------------------
 // volatile int DI_ENCODER_CH_A = 36;
 // volatile int DI_ENCODER_CH_B = 39;
