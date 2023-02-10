@@ -7,8 +7,8 @@
 #include "MedianFilter.h"
 
 #include "encoder.h"
-Encoder encoderRight(36,39);
 Encoder encoderLeft(35,34);
+Encoder encoderRight(39,36);
 
 MedianFilter encoderRightFilter(33,0);
 MedianFilter encoderLeftFilter(33,0);
@@ -76,8 +76,8 @@ void loop()
     rpm_left =  saturation(rpm_left,800);
     // float controled_speed_left = control.pid(input,kp,ki,kp) ; #output same unity [RPM]
 
-    // float controled_RPM_left = rpm_left;
-    float controled_RPM_left = esquerda_controler.output(rpm_left,0);
+    float controled_RPM_left = rpm_left;
+    // float controled_RPM_left = esquerda_controler.output(rpm_left,0);
 
     //------------------------------RIGHT-------------------------------------------
 
@@ -97,8 +97,8 @@ void loop()
 
     rpm_right = angular2rpm(angular_speed_right);   // [RPM]
     rpm_right = saturation(rpm_right,800);
-    // float controled_RPM_right = rpm_right;
-    float controled_RPM_right = direita_controler.output(rpm_right,rpm_encoder_read_right);
+    float controled_RPM_right = rpm_right;
+    // float controled_RPM_right = direita_controler.output(rpm_right,rpm_encoder_read_right);
 
   //----------------debug------------------------------
     if(debug){
