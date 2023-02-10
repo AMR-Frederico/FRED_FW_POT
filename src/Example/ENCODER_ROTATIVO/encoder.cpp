@@ -1,31 +1,19 @@
-/*........................
-  Encoder Reading
-  Author: Andre Henning
-  Company: Control Robotics
- ...........................*/
+
 
  #include "encoder.h" // header in local directory
 
 //--------------------------------------------------
-//Pinout
+//Pinout - LEGADO
 //--------------------------------------------------
-
-//direita 
-volatile int DI_ENCODER_CH_A = 36;
-volatile int DI_ENCODER_CH_B = 39;
-
-//esquerda
-// volatile int DI_ENCODER_CH_A = 34;
-// volatile int DI_ENCODER_CH_B = 35;
-
-
-
+// volatile int DI_ENCODER_CH_A = 36;
+// volatile int DI_ENCODER_CH_B = 39;
 
 //--------------------------------------------------
 //Configuration
 //--------------------------------------------------
-int encoderPPR = 600;
+int encoderPPR = 2400;
 
+Encoder* Encoder::obj_Encoder = 0;
 
 //--------------------------------------------------
 //Variable Declaration/Initialization
@@ -40,7 +28,7 @@ volatile unsigned long interr_deltaTime_us = 0;
 volatile unsigned long interr_highestTime_us = 0;
 
 //Pulse Counter
-volatile bool curA, curB, prevA, prevB;
+volatile bool curA, curB, prevA, prevB; 
 
 volatile unsigned long pulseTime = 0;
 volatile double encoderCount = 0;
@@ -82,6 +70,12 @@ volatile double curRPM_Filtered = 0;
 void IRAM_ATTR interruptionChA();
 void IRAM_ATTR interruptionChB();
 
+Encoder::Encoder(int pin_A,int pin_B){
+    this->DI_ENCODER_CH_A = pin_A;
+    this->DI_ENCODER_CH_B = pin_B;
+
+}
+
 
 void Encoder::setup()
 {
@@ -97,9 +91,11 @@ void Encoder::setup()
     prevA = curA;
     prevB = curB;
 
+    obj_Encoder = this;
+
     //Configure Interrupt
-    attachInterrupt(digitalPinToInterrupt(DI_ENCODER_CH_A), interruptionChA, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(DI_ENCODER_CH_B), interruptionChB, CHANGE);
+    attachInterrupt(DI_ENCODER_CH_A, Encoder::interruptionChA, CHANGE);
+    attachInterrupt(DI_ENCODER_CH_B, Encoder::interruptionChB, CHANGE);
     
 }
 
@@ -112,7 +108,7 @@ void IRAM_ATTR Encoder::interruptionChA()
 
     pulseTime = micros();
 
-    curA = digitalRead(DI_ENCODER_CH_A);
+    curA = digitalRead(obj_Encoder-> DI_ENCODER_CH_A);
 
     if(curA == prevA)
     {
@@ -120,7 +116,7 @@ void IRAM_ATTR Encoder::interruptionChA()
     }
     else
     {
-    curB = digitalRead(DI_ENCODER_CH_B);
+    curB = digitalRead(obj_Encoder->DI_ENCODER_CH_B);
 
     if (curB != prevB){
         encoderErro = true;
@@ -180,7 +176,7 @@ void IRAM_ATTR Encoder::interruptionChB()
 
     pulseTime = micros();
 
-    curB = digitalRead(DI_ENCODER_CH_B);
+    curB = digitalRead(obj_Encoder->DI_ENCODER_CH_B);
 
     if(curB == prevB)
     {
@@ -189,7 +185,7 @@ void IRAM_ATTR Encoder::interruptionChB()
     else
     {
 
-    curA = digitalRead(DI_ENCODER_CH_A);
+    curA = digitalRead(obj_Encoder->DI_ENCODER_CH_A);
 
     if (curA != prevA){
         encoderErro = true;
@@ -240,7 +236,7 @@ void IRAM_ATTR Encoder::interruptionChB()
 
 double Encoder::readAngle()
 {
-    curAngle = ((double)360.0 * (double)encoderCount) / (double)(4.0*encoderPPR);
+    curAngle = ((double)360.0*(double)encoderCount)  / ((double)(3.0*encoderPPR));
     return curAngle;
 
 }

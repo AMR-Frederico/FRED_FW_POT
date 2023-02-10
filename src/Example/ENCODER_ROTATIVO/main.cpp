@@ -67,7 +67,7 @@ static int commMode = COMM_ROS;
 
 #include "encoder.h"
 
-Encoder encoder;
+Encoder encoder(39,36);
 
 
 

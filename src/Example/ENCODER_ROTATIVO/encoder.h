@@ -1,8 +1,4 @@
-/*........................
-  Encoder Reading
-  Author: Andre Henning
-  Company: Control Robotics
- ...........................*/
+
 
 #ifndef ENCODER_H // include guard
 #define ENCODER_H
@@ -12,19 +8,22 @@
   class Encoder
   {
     public:
-     
+      Encoder( int pin_A, int pin_B);
       void setup();
-      static  void IRAM_ATTR interruptionChA();
-      static  void IRAM_ATTR interruptionChB();
-    
       double readPulses();
       double readAngle();
       double readRPM();
       void debugPrint();
       void reset();
+      int DI_ENCODER_CH_A;
+      int DI_ENCODER_CH_B;
         
     private:
-      
+      static void IRAM_ATTR interruptionChA();
+      static void IRAM_ATTR interruptionChB();
+
+      // objeto que representa a classe Encoder
+      static Encoder* obj_Encoder; 
 
   };
 

@@ -11,7 +11,7 @@
 //--------------------------------------------------
 //Configuration
 //--------------------------------------------------
-int encoderPPR = 600;
+int encoderPPR = 2400; // dont ask questions 
 
 Encoder* Encoder::obj_Encoder = 0;
 
@@ -117,7 +117,7 @@ void IRAM_ATTR Encoder::interruptionChA()
     else
     {
     curB = digitalRead(obj_Encoder->DI_ENCODER_CH_B);
-
+// /
     if (curB != prevB){
         encoderErro = true;
         encoderPulseError++;
@@ -236,7 +236,7 @@ void IRAM_ATTR Encoder::interruptionChB()
 
 double Encoder::readAngle()
 {
-    curAngle = ((double)360.0 * (double)encoderCount) / (double)(4.0*encoderPPR);
+    curAngle = ((double)360.0 * (double)encoderCount) / ((double)(3.0*encoderPPR));
     return curAngle;
 
 }
