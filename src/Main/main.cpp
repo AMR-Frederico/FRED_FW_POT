@@ -8,8 +8,10 @@
 
 #include "encoder.h"
 
-Encoder encoderRight(39,36);
-Encoder encoderLeft(34,35);
+Encoder encoderRight(39,36,1);
+Encoder encoderLeft(34,35,2);
+// Iniciando obj_Encoder como NULL
+Encoder* Encoder::obj_Encoder=NULL;
 
 MedianFilter encoderRightFilter(33,0);
 MedianFilter encoderLeftFilter(33,0);
@@ -41,6 +43,7 @@ void setup() {
   led_strip_init();
   pinMode(LED_BUILD_IN,OUTPUT);
   digitalWrite(LED_BUILD_IN,HIGH);
+  
 }
 
 void loop() 
@@ -80,6 +83,8 @@ void loop()
     float controled_RPM_left = rpm_left;
     // float controled_RPM_left = esquerda_controler.output(rpm_left,0);
 
+    //Libera o encoder
+    encoderLeft.detach_encoder();
     //------------------------------RIGHT-------------------------------------------
 
     //status -- encoder 
@@ -101,7 +106,8 @@ void loop()
     rpm_right = saturation(rpm_right,800);
     float controled_RPM_right = rpm_right;
     // float controled_RPM_right = direita_controler.output(rpm_right,rpm_encoder_read_right);
-
+    //Libera o encoder
+    encoderRight.detach_encoder();
   //----------------debug------------------------------
     if(debug){
     rpm = getRPMsetpoint();

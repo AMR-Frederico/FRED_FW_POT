@@ -8,8 +8,10 @@
   class Encoder
   {
     public:
-      Encoder( int pin_A, int pin_B);
+      Encoder( int pin_A, int pin_B, int id=0);
+      unsigned int id;
       void encoder_setup();
+      void detach_encoder();
       double readPulses();
       double readAngle();
       double readRPM();
@@ -17,6 +19,7 @@
       void reset();
       int DI_ENCODER_CH_A;
       int DI_ENCODER_CH_B;
+
         
     private:
       static void IRAM_ATTR interruptionChA();
@@ -24,8 +27,6 @@
 
       // objeto que representa a classe Encoder
       static Encoder* obj_Encoder; 
-
   };
-
   
 #endif
