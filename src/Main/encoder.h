@@ -24,6 +24,7 @@
 
       // objeto que representa a classe Encoder
       static Encoder* obj_Encoder; 
+      // Encoder* obj_Encoder; 
 
   };
 

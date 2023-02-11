@@ -17,7 +17,9 @@ MedianFilter encoderLeftFilter(33,0);
 
 #include "controler.h"
 Controler  esquerda_controler(0.4,0.01,0.008);
+// Controler  direita_controler(0.4,0.01,0.008);
 Controler  direita_controler(0.4,0.01,0.008);
+
 
 const int ACC = 50 ;
 const int GAIN = 1 ;
@@ -31,7 +33,7 @@ float rpm_left = 0;
 int rpm = 0;
 int rpm_controled = 0;
 
-bool debug = false;
+bool debug = true;
 
 
 
@@ -104,9 +106,9 @@ void loop()
   //----------------debug------------------------------
     if(debug){
     rpm = getRPMsetpoint();
-    rpm_controled =direita_controler.output(rpm,0);
-    write2motor(rpm,4);
-    write2motor(rpm_controled,4);
+    rpm_controled = direita_controler.output(rpm,rpm_encoder_read_right);
+    write2motor(rpm_controled,2);
+    // write2motor(rpm,2);
     }
   //--------------------------execute-----------------
 
@@ -120,6 +122,6 @@ void loop()
              rpm_encoder_read_left ,     rpm_encoder_read_right,
              ticks_encoder_read_left,    ticks_encoder_read_right,
              rpm_controled,              
-             controled_RPM_left,  rpm_left);
+             controled_RPM_left,         rpm_left);
     nh.spinOnce();
 }
