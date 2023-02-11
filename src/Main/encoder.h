@@ -9,7 +9,7 @@
   {
     public:
       Encoder( int pin_A, int pin_B);
-      void setup();
+      void encoder_setup();
       double readPulses();
       double readAngle();
       double readRPM();

@@ -91,9 +91,10 @@ Encoder::Encoder(int pin_A,int pin_B){
 }
 
 
-void Encoder::setup()
+void Encoder::encoder_setup()
 {
-    obj_Encoder = this;
+    //Se obj_Encoder!=NULL, então, obj_Encoder=NULL, caso contrário, obj_Encoder=this
+    obj_Encoder = (obj_Encoder!=NULL) ? NULL : this; 
     //Configure Interrupt
     attachInterrupt(DI_ENCODER_CH_A, Encoder::interruptionChA, CHANGE);
     attachInterrupt(DI_ENCODER_CH_B, Encoder::interruptionChB, CHANGE);

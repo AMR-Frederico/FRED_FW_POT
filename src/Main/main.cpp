@@ -39,8 +39,6 @@ bool debug = false;
 void setup() { 
   ros_init();
   led_strip_init();
-  encoderLeft.setup();
-  encoderRight.setup();
   pinMode(LED_BUILD_IN,OUTPUT);
   digitalWrite(LED_BUILD_IN,HIGH);
 }
@@ -60,8 +58,10 @@ void loop()
     //---------------------LEFT-------------------------------------------
     
     // status -------encoder 
+    // Inicia o encodar da esquerda e faz uma leitura
+    encoderLeft.encoder_setup();
     double angle_encoder_read_left  = encoderLeft.readAngle();
-
+    
     double rpm_encoder_read_left = encoderLeft.readRPM();
     encoderLeftFilter.in(rpm_encoder_read_left);
 
@@ -83,7 +83,8 @@ void loop()
     //------------------------------RIGHT-------------------------------------------
 
     //status -- encoder 
-
+    // Inicia o encodar da direta e faz uma leitura
+    encoderRight.encoder_setup();
     double angle_encoder_read_right = encoderRight.readAngle();
 
     double rpm_encoder_read_right = encoderRight.readRPM();
