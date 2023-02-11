@@ -13,6 +13,8 @@
 //--------------------------------------------------
 int encoderPPR = 2400; // dont ask questions 
 
+Encoder* Encoder::obj_Encoder = 0;
+
 //--------------------------------------------------
 //Variable Declaration/Initialization
 //--------------------------------------------------
@@ -70,10 +72,10 @@ volatile int relation_motor_encoder = motor_gear/encoder_gear;
 void IRAM_ATTR interruptionChA();
 void IRAM_ATTR interruptionChB();
 
-Encoder::Encoder(int pin_A,int pin_B,int id){
+Encoder::Encoder(int pin_A,int pin_B){
     this-> DI_ENCODER_CH_A = pin_A;
     this-> DI_ENCODER_CH_B = pin_B;
-    
+
     //Serial.println("EncSetup");
     
     //IO
@@ -91,22 +93,14 @@ Encoder::Encoder(int pin_A,int pin_B,int id){
 }
 
 
-void Encoder::encoder_setup()
+void Encoder::setup()
 {
-    obj_Encoder=this;
+    obj_Encoder = this;
     //Configure Interrupt
     attachInterrupt(DI_ENCODER_CH_A, Encoder::interruptionChA, CHANGE);
     attachInterrupt(DI_ENCODER_CH_B, Encoder::interruptionChB, CHANGE);
-    //Escreve qual encoder está sendo lindo
-    if(this->id!=0){
-        printf("Lendo encoder: %d", obj_Encoder->id);
-    }
     
-}
-
-void Encoder::detach_encoder()
-{
-    obj_Encoder=NULL;
+    
 }
 
 
