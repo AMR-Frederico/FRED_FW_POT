@@ -71,14 +71,9 @@ void IRAM_ATTR interruptionChA();
 void IRAM_ATTR interruptionChB();
 
 Encoder::Encoder(int pin_A,int pin_B){
-    this->DI_ENCODER_CH_A = pin_A;
-    this->DI_ENCODER_CH_B = pin_B;
+    this-> DI_ENCODER_CH_A = pin_A;
+    this-> DI_ENCODER_CH_B = pin_B;
 
-}
-
-
-void Encoder::setup()
-{
     //Serial.println("EncSetup");
     
     //IO
@@ -91,11 +86,18 @@ void Encoder::setup()
     prevA = curA;
     prevB = curB;
 
-    obj_Encoder = this;
 
+
+}
+
+
+void Encoder::setup()
+{
+    obj_Encoder = this;
     //Configure Interrupt
     attachInterrupt(DI_ENCODER_CH_A, Encoder::interruptionChA, CHANGE);
     attachInterrupt(DI_ENCODER_CH_B, Encoder::interruptionChB, CHANGE);
+    
     
 }
 
