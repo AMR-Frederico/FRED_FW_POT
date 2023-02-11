@@ -1,7 +1,7 @@
 #include "controler.h"
 // #include <Main/tools.h>
 
-Controler::Controler(float kp, float kd, float ki)
+Controler::Controler(float kp, float ki, float kd)
 {   KP = kp;
     KD = kd;
     KI = ki;
@@ -36,14 +36,14 @@ float Controler::proporcional(){
 }
 
 float Controler::integrative(){
-    integral = integral + error*KI ;
+    integral = integral + (error*(delta_time/1000000));
     // integral = saturation(integral,1000);
-    return integral ;
+    return integral*KI;
 
 }
 
 float Controler::derivative(){
-    delta_error = last_error - error ;
+    delta_error = (last_error - error);
     return delta_error*KD;
 
 }

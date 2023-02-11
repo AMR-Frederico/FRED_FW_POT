@@ -38,14 +38,14 @@ float Controler::proporcional(){
 }
 
 float Controler::integrative(){
-    integral = (integral + error*(delta_time/1000000))*KI ;
+    integral = integral + (error*(delta_time/1000000));
     // integral = saturation(integral,1000);
-    return integral ;
+    return integral*KI;
 
 }
 
 float Controler::derivative(){
-    delta_error = (last_error - error)/(delta_time*1000000);
+    delta_error = (last_error - error);
     return delta_error*KD;
 
 }

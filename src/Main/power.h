@@ -43,17 +43,18 @@ void write_PWM(motor motor, float vel){
   }
   
   //send to H bridge 
-  if(vel >= 0)
+  if(vel > 0)
   {
     ledcWrite(motor.Canal ,vel);
     digitalWrite(motor.In_B, LOW);
     digitalWrite(motor.In_A, HIGH);  
   }
-  else
+
+  if(vel < 0)
   {
-     ledcWrite(motor.Canal,vel);
-     digitalWrite(motor.In_B, HIGH);
-     digitalWrite(motor.In_A, LOW);
+    ledcWrite(motor.Canal ,vel);
+    digitalWrite(motor.In_B, HIGH);
+    digitalWrite(motor.In_A, LOW);  
   }
 }
 
@@ -88,9 +89,6 @@ void write2motors(int rpm_left, int rpm_right){
 
   pwm_left  = rpm2pwm(rpm_left);
   pwm_right = rpm2pwm(rpm_right);
-
-  pwm_left = saturation_under(pwm_left,PWM_SATURATION_UNDER);
-  pwm_right = saturation_under(pwm_right,PWM_SATURATION_UNDER);
 
   write_PWM(motor1,pwm_left); 
   write_PWM(motor2,pwm_right); 

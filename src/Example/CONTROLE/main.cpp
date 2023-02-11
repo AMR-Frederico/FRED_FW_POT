@@ -18,7 +18,7 @@ MedianFilter encoderLeftFilter(33,0);
 #include "controler.h"
 Controler  esquerda_controler(0.4,0.01,0.008);  //(p,i,d)
 // Controler  direita_controler(0.4,0.01,0.008);
-Controler  direita_controler( 0.4 , 0.01 , 0.08 );  //(p,i,d)
+Controler  direita_controler(2.5 , 3 , 0.01 );  //(p,i,d)
 
 
 const int ACC = 50 ;
@@ -76,7 +76,7 @@ void loop()
 
   //----------------debug------------------------------
     if(debug){
-    rpm = 200;
+    rpm = -200;
     rpm_controled = direita_controler.output(rpm,rpm_encoder_read_right);
     direita_controler.debug();
     write2motor(rpm_controled,2);
