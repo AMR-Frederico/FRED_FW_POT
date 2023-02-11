@@ -34,7 +34,7 @@ float rpm_left = 0;
 int rpm = 0;
 int rpm_controled = 0;
 
-bool debug = false;
+bool debug = true;
 
 
 
@@ -77,7 +77,7 @@ void loop()
     float angular_speed_left = cinematic_left(linear,angular,GAIN); //wheel [rad/s]
 
     rpm_left = angular2rpm(angular_speed_left);// [RPM]
-    rpm_left =  saturation(rpm_left,800);
+    // rpm_left =  saturation(rpm_left,800);
     // float controled_speed_left = control.pid(input,kp,ki,kp) ; #output same unity [RPM]
 
     float controled_RPM_left = rpm_left;
@@ -100,16 +100,16 @@ void loop()
     float angular_speed_right = cinematic_right(linear,angular,GAIN); //wheel [RAD/S]
 
     rpm_right = angular2rpm(angular_speed_right);   // [RPM]
-    rpm_right = saturation(rpm_right,800);
+    // rpm_right = saturation(rpm_right,800);
     float controled_RPM_right = rpm_right;
     // float controled_RPM_right = direita_controler.output(rpm_right,rpm_encoder_read_right);
 
   //----------------debug------------------------------
     if(debug){
     rpm = getRPMsetpoint();
-    rpm_controled = 0;//direita_controler.output(rpm,rpm_encoder_read_right);
-    // write2motor(rpm_controled,2);
-    write2motor(-500,2);
+    rpm_controled = direita_controler.output(rpm,rpm_encoder_read_right);
+    write2motor(rpm_controled,2);
+    //write2motor(rpm,2);
     }
   //--------------------------execute-----------------
 

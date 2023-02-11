@@ -31,7 +31,7 @@ void stop(motor motor){
 }
 
 
-void write_PWM(motor motor, float vel){
+void write_PWM(motor motor, int vel){
 
   //satured output
 
@@ -43,19 +43,13 @@ void write_PWM(motor motor, float vel){
   }
   
   //send to H bridge 
-  if(vel > 0)
-  {
-    ledcWrite(motor.Canal ,vel);
-    digitalWrite(motor.In_B, LOW);
-    digitalWrite(motor.In_A, HIGH);  
-  }
+ 
+    ledcWrite(motor.Canal ,abs(vel));
+    digitalWrite(motor.In_B, vel < 0);
+    digitalWrite(motor.In_A, vel > 0);  
 
-  if(vel < 0)
-  {
-    ledcWrite(motor.Canal ,vel);
-    digitalWrite(motor.In_B, HIGH);
-    digitalWrite(motor.In_A, LOW);  
-  }
+
+  
 }
 
  int rpm2pwm(float speed_rpm){
