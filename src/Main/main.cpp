@@ -2,7 +2,6 @@
 #include <Main/config.h>
 #include <Main/ros_com.h>
 #include <Main/controler.h>
-#include <Main/led_strip.h>
 
 #include "MedianFilter.h"
 
@@ -37,10 +36,7 @@ bool debug = false;
 
 void setup() { 
   ros_init();
-  led_strip_init();
   encoder.setup();
-  pinMode(LED_BUILD_IN,OUTPUT);
-  digitalWrite(LED_BUILD_IN,HIGH);
 }
 
 void loop() 

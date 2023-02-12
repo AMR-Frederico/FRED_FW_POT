@@ -6,13 +6,12 @@
 
 #include <Main/cinematic.h>
 #include <Main/power.h>
-#include <Main/led_strip.h>
 
 // Subscribers ------------
 #define cmd_wheels_topic "cmd_wheels"
 #define cmd_rpm_topic "cmd/rpm"
 #define cmd_vel_topic "cmd_vel/safe"
-#define cmd_led_strip_topic "cmd/led_strip/color"
+// #define cmd_led_strip_topic "cmd/led_strip/color"
 
 //Publisher 
 #define pwm_right_topic "power/status/pwm/right"
@@ -43,8 +42,8 @@ ros::NodeHandle  nh;
 //locomotion 
 ros::Subscriber<geometry_msgs::Twist> subCmdVel(cmd_vel_topic, cmdVelCB);
 ros::Subscriber<std_msgs::Int16> subCmd_RPM(cmd_rpm_topic, cmdRPMCB); 
-//lights 
-ros::Subscriber<std_msgs::Float32> subLedStrip(cmd_led_strip_topic, led_strip_controler_ros );
+// //lights 
+// ros::Subscriber<std_msgs::Float32> subLedStrip(cmd_led_strip_topic, led_strip_controler_ros );
 
 
 //-----------------PUBS-------------------------
@@ -92,7 +91,7 @@ bool rosConnected(ros::NodeHandle  nh,bool _connect){
     bool connected = nh.connected();
     if(_connect != connected){
         _connect = connected;
-        digitalWrite(LED_BUILD_IN,!connected);
+        // digitalWrite(LED_BUILD_IN,!connected);
        
     }
     
@@ -105,7 +104,7 @@ void ros_init(){
   nh.initNode();
 
   nh.subscribe(subCmdVel);
-  nh.subscribe(subLedStrip);
+//   nh.subscribe(subLedStrip);
   nh.subscribe(subCmd_RPM);
 
 
