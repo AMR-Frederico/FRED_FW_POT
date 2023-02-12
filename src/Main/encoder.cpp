@@ -79,8 +79,8 @@ void IRAM_ATTR interruptionChBR();
 Encoder::Encoder(int pin_AL, int pin_BL, int pin_AR, int pin_BR){
     this-> DI_ENCODER_CH_AL = pin_AL;
     this-> DI_ENCODER_CH_BL = pin_BL;
-    this-> DI_ENCODER_CH_AL = pin_AR;
-    this-> DI_ENCODER_CH_BL = pin_BR;
+    this-> DI_ENCODER_CH_AR = pin_AR;
+    this-> DI_ENCODER_CH_BR = pin_BR;
     //Serial.println("EncSetup");
     
     //IO
@@ -112,8 +112,8 @@ void Encoder::setup()
     //Configure Interrupt
     attachInterrupt(DI_ENCODER_CH_AL, Encoder::interruptionChAL, CHANGE);
     attachInterrupt(DI_ENCODER_CH_BL, Encoder::interruptionChBL, CHANGE);
-    attachInterrupt(DI_ENCODER_CH_AR, Encoder::interruptionChAL, CHANGE);
-    attachInterrupt(DI_ENCODER_CH_BR, Encoder::interruptionChBL, CHANGE);
+    attachInterrupt(DI_ENCODER_CH_AR, Encoder::interruptionChAR, CHANGE);
+    attachInterrupt(DI_ENCODER_CH_BR, Encoder::interruptionChBR, CHANGE);
     
 }
 
@@ -259,7 +259,7 @@ void IRAM_ATTR Encoder::interruptionChAR()
 
     pulseTime[RIGHT] = micros();
 
-    curAR = digitalRead(obj_Encoder-> DI_ENCODER_CH_AL);
+    curAR = digitalRead(obj_Encoder-> DI_ENCODER_CH_AR);
 
     if(curAR == prevAR)
     {
@@ -267,7 +267,7 @@ void IRAM_ATTR Encoder::interruptionChAR()
     }
     else
     {
-    curBL = digitalRead(obj_Encoder->DI_ENCODER_CH_BL);
+    curBL = digitalRead(obj_Encoder->DI_ENCODER_CH_BR);
 // /
     if (curBR != prevBR){
         encoderErro[RIGHT] = true;
@@ -327,7 +327,7 @@ void IRAM_ATTR Encoder::interruptionChBR()
 
     pulseTime[RIGHT] = micros();
 
-    curBR = digitalRead(obj_Encoder->DI_ENCODER_CH_BL);
+    curBR = digitalRead(obj_Encoder->DI_ENCODER_CH_BR);
 
     if(curBR == prevBR)
     {
@@ -336,7 +336,7 @@ void IRAM_ATTR Encoder::interruptionChBR()
     else
     {
 
-    curAR = digitalRead(obj_Encoder->DI_ENCODER_CH_AL);
+    curAR = digitalRead(obj_Encoder->DI_ENCODER_CH_AR);
 
     if (curAR != prevAR){
         encoderErro[RIGHT] = true;
