@@ -19,7 +19,7 @@ Encoder* Encoder::obj_Encoder = 0;
 //--------------------------------------------------
 //Variable Declaration/Initialization
 //--------------------------------------------------
-volatile bool firstRead = true;
+volatile bool firstRead[2] = {true, true};
 
 //only to debug interruption time
 volatile unsigned long interr_curTime_us = 0;
@@ -32,38 +32,38 @@ volatile unsigned long interr_highestTime_us = 0;
 volatile bool curAL, curBL, prevAL, prevBL; 
 volatile bool curAR, curBR, prevAR, prevBR; 
 
-volatile unsigned long pulseTime[2];
-volatile double encoderCount[2];
-volatile double encoderPulseCount[2];
-volatile double encoderPulseError[2];
-volatile bool encoderErro[2];
+volatile unsigned long pulseTime[2] = {0, 0};
+volatile double encoderCount[2] = {0, 0};
+volatile double encoderPulseCount[2] = {0, 0};
+volatile double encoderPulseError[2] = {0, 0};
+volatile bool encoderErro[2] = {0, 0};
 
 
 
 //Calculate Current Angle
-double curAngle[2];
+double curAngle[2] = {0, 0};
 
 
 //Calculate RPM
-volatile unsigned long pulseTimeLatch[2];
-volatile unsigned long pulsePrevTime[2];
-volatile unsigned long pulsePrevPrevTime[2];
-volatile unsigned long pulseDeltaTime[2];
+volatile unsigned long pulseTimeLatch[2] = {0, 0};
+volatile unsigned long pulsePrevTime[2] = {0, 0};
+volatile unsigned long pulsePrevPrevTime[2] = {0, 0};
+volatile unsigned long pulseDeltaTime[2] = {0, 0};
 
-volatile double encoderCountLatch[2];
-volatile double encoderPrevCount[2];
-volatile double encoderPrevPrevCount[2];
-volatile double encoderDeltaCount[2];
+volatile double encoderCountLatch[2] = {0, 0};
+volatile double encoderPrevCount[2] = {0, 0};
+volatile double encoderPrevPrevCount[2] = {0, 0};
+volatile double encoderDeltaCount[2] = {0, 0};
 
-volatile bool lastPulseForward[2];
-volatile bool lastPulseBackward[2];
+volatile bool lastPulseForward[2] = {0, 0};
+volatile bool lastPulseBackward[2] = {0, 0};
 
-volatile double curRPM[2];
-volatile double prevRPM[2];
-volatile double highestRPM[2];
+volatile double curRPM[2] = {0, 0};
+volatile double prevRPM[2] = {0, 0};
+volatile double highestRPM[2] = {0, 0};
 
-volatile int filterGain[2];
-volatile double curRPM_Filtered[2];
+volatile int filterGain[2] = {20, 20};
+volatile double curRPM_Filtered[2] = {0, 0};
 
 
 
@@ -112,7 +112,8 @@ void Encoder::setup()
     //Configure Interrupt
     attachInterrupt(DI_ENCODER_CH_AL, Encoder::interruptionChAL, CHANGE);
     attachInterrupt(DI_ENCODER_CH_BL, Encoder::interruptionChBL, CHANGE);
-    
+    attachInterrupt(DI_ENCODER_CH_AR, Encoder::interruptionChAL, CHANGE);
+    attachInterrupt(DI_ENCODER_CH_BR, Encoder::interruptionChBL, CHANGE);
     
 }
 
@@ -407,10 +408,10 @@ double Encoder::readRPM(int encoder_side)
     encoderDeltaCount[encoder_side] = encoderCountLatch[encoder_side] - encoderPrevCount[encoder_side];
 
     
-    if (firstRead==true)
+    if (firstRead[encoder_side]==true)
     {
         curRPM[encoder_side] = 0;
-        firstRead = false;
+        firstRead[encoder_side] = false;
     }
     else
     {
