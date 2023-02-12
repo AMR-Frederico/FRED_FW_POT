@@ -2,6 +2,7 @@
 
  #include "encoder.h" // header in local directory
 
+
 //--------------------------------------------------
 //Pinout - LEGADO
 //--------------------------------------------------
@@ -28,38 +29,41 @@ volatile unsigned long interr_deltaTime_us = 0;
 volatile unsigned long interr_highestTime_us = 0;
 
 //Pulse Counter
-volatile bool curA, curB, prevA, prevB; 
+volatile bool curAL, curBL, prevAL, prevBL; 
+volatile bool curAR, curBR, prevAR, prevBR; 
 
-volatile unsigned long pulseTime = 0;
-volatile double encoderCount = 0;
-volatile double encoderPulseCount=0;
-volatile double encoderPulseError=0;
-volatile bool encoderErro;
+volatile unsigned long pulseTime[2];
+volatile double encoderCount[2];
+volatile double encoderPulseCount[2];
+volatile double encoderPulseError[2];
+volatile bool encoderErro[2];
+
+
 
 //Calculate Current Angle
-double curAngle = 0;
+double curAngle[2];
 
 
 //Calculate RPM
-volatile unsigned long pulseTimeLatch = 0;
-volatile unsigned long pulsePrevTime = 0;
-volatile unsigned long pulsePrevPrevTime = 0;
-volatile unsigned long pulseDeltaTime = 0;
+volatile unsigned long pulseTimeLatch[2];
+volatile unsigned long pulsePrevTime[2];
+volatile unsigned long pulsePrevPrevTime[2];
+volatile unsigned long pulseDeltaTime[2];
 
-volatile double encoderCountLatch = 0;
-volatile double encoderPrevCount = 0;
-volatile double encoderPrevPrevCount = 0;
-volatile double encoderDeltaCount = 0;
+volatile double encoderCountLatch[2];
+volatile double encoderPrevCount[2];
+volatile double encoderPrevPrevCount[2];
+volatile double encoderDeltaCount[2];
 
-volatile bool lastPulseForward = 0;
-volatile bool lastPulseBackward = 0;
+volatile bool lastPulseForward[2];
+volatile bool lastPulseBackward[2];
 
-volatile double curRPM = 0;
-volatile double prevRPM = 0;
-volatile double highestRPM = 0;
+volatile double curRPM[2];
+volatile double prevRPM[2];
+volatile double highestRPM[2];
 
-volatile int filterGain = 20;
-volatile double curRPM_Filtered = 0;
+volatile int filterGain[2];
+volatile double curRPM_Filtered[2];
 
 
 
@@ -67,24 +71,35 @@ volatile double curRPM_Filtered = 0;
 // Functions
 //--------------------------------------------------
 
-void IRAM_ATTR interruptionChA();
-void IRAM_ATTR interruptionChB();
+void IRAM_ATTR interruptionChAL();
+void IRAM_ATTR interruptionChBL();
+void IRAM_ATTR interruptionChAR();
+void IRAM_ATTR interruptionChBR();
 
-Encoder::Encoder(int pin_A,int pin_B){
-    this-> DI_ENCODER_CH_A = pin_A;
-    this-> DI_ENCODER_CH_B = pin_B;
-
+Encoder::Encoder(int pin_AL, int pin_BL, int pin_AR, int pin_BR){
+    this-> DI_ENCODER_CH_AL = pin_AL;
+    this-> DI_ENCODER_CH_BL = pin_BL;
+    this-> DI_ENCODER_CH_AL = pin_AR;
+    this-> DI_ENCODER_CH_BL = pin_BR;
     //Serial.println("EncSetup");
     
     //IO
-    pinMode(DI_ENCODER_CH_A, INPUT_PULLUP);
-    pinMode(DI_ENCODER_CH_B, INPUT_PULLUP);
+    pinMode(DI_ENCODER_CH_AL, INPUT_PULLUP);
+    pinMode(DI_ENCODER_CH_BL, INPUT_PULLUP);
+    pinMode(DI_ENCODER_CH_AR, INPUT_PULLUP);
+    pinMode(DI_ENCODER_CH_BR, INPUT_PULLUP);
 
-    //Read Channels AB Initial State
-    curA = digitalRead(DI_ENCODER_CH_A);
-    curB = digitalRead(DI_ENCODER_CH_B);
-    prevA = curA;
-    prevB = curB;
+    //Read Channels AB from Left Encoder Initial State
+    curAL = digitalRead(DI_ENCODER_CH_AL);
+    curBL = digitalRead(DI_ENCODER_CH_BL);
+    prevAL = curAL;
+    prevBL = curBL;
+
+    //Read Channels AB from Right Encoder Initial State
+    curAR = digitalRead(DI_ENCODER_CH_AR);
+    curBR = digitalRead(DI_ENCODER_CH_BR);
+    prevAR = curAR;
+    prevBR = curBR;
 
 
 
@@ -95,72 +110,72 @@ void Encoder::setup()
 {
     obj_Encoder = this;
     //Configure Interrupt
-    attachInterrupt(DI_ENCODER_CH_A, Encoder::interruptionChA, CHANGE);
-    attachInterrupt(DI_ENCODER_CH_B, Encoder::interruptionChB, CHANGE);
+    attachInterrupt(DI_ENCODER_CH_AL, Encoder::interruptionChAL, CHANGE);
+    attachInterrupt(DI_ENCODER_CH_BL, Encoder::interruptionChBL, CHANGE);
     
     
 }
 
 
-void IRAM_ATTR Encoder::interruptionChA()
+void IRAM_ATTR Encoder::interruptionChAL()
 {
 
     //Serial.println("A");
     //  interr_prevTime1_us = micros();
 
-    pulseTime = micros();
+    pulseTime[LEFT] = micros();
 
-    curA = digitalRead(obj_Encoder-> DI_ENCODER_CH_A);
+    curAL = digitalRead(obj_Encoder-> DI_ENCODER_CH_AL);
 
-    if(curA == prevA)
+    if(curAL == prevAL)
     {
         //depois da interrupção, já leu e voltou ao valor anterior -> debounce = faz nada
     }
     else
     {
-    curB = digitalRead(obj_Encoder->DI_ENCODER_CH_B);
+    curBL = digitalRead(obj_Encoder->DI_ENCODER_CH_BL);
 // /
-    if (curB != prevB){
-        encoderErro = true;
-        encoderPulseError++;
+    if (curBL != prevBL){
+        encoderErro[LEFT] = true;
+        encoderPulseError[LEFT]++;
         //Serial.println("E_A");
     }
 
     // Serial.print("A:");
-    // Serial.print(prevA);
-    // Serial.print(prevB);
+    // Serial.print(prevAL);
+    // Serial.print(prevBL);
     // Serial.print("-");
-    // Serial.print(curA);
-    // Serial.print(curB);
+    // Serial.print(curAL);
+    // Serial.print(curBL);
     // Serial.print("-");
     // Serial.println(encoderPulseError);
 
-    prevA = curA;
-    prevB = curB;
+    prevAL = curAL;
+    prevBL = curBL;
 
-    if (curA == false)
+    if (curAL == false)
     {
-        if (curB == true)
+        if (curBL == true)
         {
-        encoderCount++;
+        encoderCount[LEFT]++;
         }
         else {
-        encoderCount--;
+        encoderCount[LEFT]--;
         }
         
     }
-    if (curA == true)
+    if (curAL == true)
     {
-        if (curB == false)
+        if (curBL == false)
         {
-        encoderCount++;
+        encoderCount[LEFT]++;
         }
         else {
-        encoderCount--;
+        encoderCount[LEFT]--;
         }
     }
 
-    encoderPulseCount++;
+    encoderPulseCount[LEFT]++;
 
 
     //      interr_prevTime2_us = interr_prevTime1_us;
@@ -172,143 +187,276 @@ void IRAM_ATTR Encoder::interruptionChA()
     }
 }
 
-void IRAM_ATTR Encoder::interruptionChB()
+void IRAM_ATTR Encoder::interruptionChBL()
 {
     //Serial.println("B");
 
-    pulseTime = micros();
+    pulseTime[LEFT] = micros();
 
-    curB = digitalRead(obj_Encoder->DI_ENCODER_CH_B);
+    curBL = digitalRead(obj_Encoder->DI_ENCODER_CH_BL);
 
-    if(curB == prevB)
+    if(curBL == prevBL)
     {
     //depois da interrupção, já leu e voltou ao valor anterior -> debounce = faz nada
     }
     else
     {
 
-    curA = digitalRead(obj_Encoder->DI_ENCODER_CH_A);
+    curAL = digitalRead(obj_Encoder->DI_ENCODER_CH_AL);
 
-    if (curA != prevA){
-        encoderErro = true;
-        encoderPulseError++;
+    if (curAL != prevAL){
+        encoderErro[LEFT] = true;
+        encoderPulseError[LEFT]++;
         //Serial.println("E_B");
     }
 
     //    Serial.print("B - ");
-    //    Serial.print(prevA);
-    //    Serial.print(prevB);
+    //    Serial.print(prevAL);
+    //    Serial.print(prevBL);
     //    Serial.print("-");
-    //    Serial.print(curA);
-    //    Serial.print(curB);
+    //    Serial.print(curAL);
+    //    Serial.print(curBL);
     //    Serial.print("-");
-    //    Serial.println(encoderPulseError);
+    //    Serial.println(encoderPulseError[LEFT]);
 
-    prevB = curB;
-    prevA = curA;
+    prevBL = curBL;
+    prevAL = curAL;
 
-    if (curB == false)
+    if (curBL == false)
     {
-        if (curA == false)
+        if (curAL == false)
         {
-        encoderCount++;
+        encoderCount[LEFT]++;
         }
         else {
-        encoderCount--;
+        encoderCount[LEFT]--;
         }
         
     }
-    if (curB == true)
+    if (curBL == true)
     {
-        if (curA == true)
+        if (curAL == true)
         {
-        encoderCount++;
+        encoderCount[LEFT]++;
         }
         else {
-        encoderCount--;
+        encoderCount[LEFT]--;
         }
     }
 
-    encoderPulseCount++;
+    encoderPulseCount[LEFT]++;
 
     }
   
 }
 
-
-double Encoder::readAngle()
+void IRAM_ATTR Encoder::interruptionChAR()
 {
-    curAngle = ((double)360.0 * (double)encoderCount) / ((double)(3.0*encoderPPR));
-    return curAngle;
+
+    //Serial.println("A");
+    //  interr_prevTime1_us = micros();
+
+    pulseTime[RIGHT] = micros();
+
+    curAR = digitalRead(obj_Encoder-> DI_ENCODER_CH_AL);
+
+    if(curAR == prevAR)
+    {
+        //depois da interrupção, já leu e voltou ao valor anterior -> debounce = faz nada
+    }
+    else
+    {
+    curBL = digitalRead(obj_Encoder->DI_ENCODER_CH_BL);
+// /
+    if (curBR != prevBR){
+        encoderErro[RIGHT] = true;
+        encoderPulseError[RIGHT]++;
+        //Serial.println("E_A");
+    }
+
+    // Serial.print("A:");
+    // Serial.print(prevAR);
+    // Serial.print(prevBR);
+    // Serial.print("-");
+    // Serial.print(curAR);
+    // Serial.print(curBR);
+    // Serial.print("-");
+    // Serial.println(encoderErro[RIGHT]);
+
+    prevAR = curAR;
+    prevBR = curBR;
+
+    if (curAR == false)
+    {
+        if (curBR == true)
+        {
+        encoderCount[RIGHT]++;
+        }
+        else {
+        encoderCount[RIGHT]--;
+        }
+        
+    }
+    if (curAR == true)
+    {
+        if (curBR == false)
+        {
+        encoderCount[RIGHT]++;
+        }
+        else {
+        encoderCount[RIGHT]--;
+        }
+    }
+
+    encoderPulseCount[RIGHT]++;
+
+
+    //      interr_prevTime2_us = interr_prevTime1_us;
+    //      interr_curTime_us = micros();
+    //      interr_deltaTime_us = interr_curTime_us - interr_prevTime2_us;
+    //      
+    //      if (interr_deltaTime_us > interr_highestTime_us) interr_highestTime_us = interr_deltaTime_us;
+    
+    }
+}
+
+void IRAM_ATTR Encoder::interruptionChBR()
+{
+    //Serial.println("B");
+
+    pulseTime[RIGHT] = micros();
+
+    curBR = digitalRead(obj_Encoder->DI_ENCODER_CH_BL);
+
+    if(curBR == prevBR)
+    {
+    //depois da interrupção, já leu e voltou ao valor anterior -> debounce = faz nada
+    }
+    else
+    {
+
+    curAR = digitalRead(obj_Encoder->DI_ENCODER_CH_AL);
+
+    if (curAR != prevAR){
+        encoderErro[RIGHT] = true;
+        encoderPulseError[RIGHT]++;
+        //Serial.println("E_B");
+    }
+
+    //    Serial.print("B - ");
+    //    Serial.print(prevAR);
+    //    Serial.print(prevBR);
+    //    Serial.print("-");
+    //    Serial.print(curAR);
+    //    Serial.print(curBR);
+    //    Serial.print("-");
+    //    Serial.println(encoderErro[RIGHT]);
+
+    prevBR = curBR;
+    prevAR = curAR;
+
+    if (curBR == false)
+    {
+        if (curAR == false)
+        {
+        encoderCount[RIGHT]++;
+        }
+        else {
+        encoderCount[RIGHT]--;
+        }
+        
+    }
+    if (curBR == true)
+    {
+        if (curAR == true)
+        {
+        encoderCount[RIGHT]++;
+        }
+        else {
+        encoderCount[RIGHT]--;
+        }
+    }
+
+    encoderPulseCount[RIGHT]++;
+
+    }
+  
+}
+
+double Encoder::readAngle(int encoder_side){
+    curAngle[encoder_side] = ((double)360.0 * (double)encoderCount[encoder_side]) / ((double)(3.0*encoderPPR));
+
+    return curAngle[encoder_side];
 
 }
 
-double Encoder::readPulses(){
-    return encoderCount; 
+double Encoder::readPulses(int encoder_side){
+    return encoderCount[encoder_side];
 
 }
 
-double Encoder::readRPM()
+
+double Encoder::readRPM(int encoder_side)
 {
 
     noInterrupts(); //Disable interruptions - Critical code
-    pulseTimeLatch = pulseTime;
-    encoderCountLatch = encoderCount;
+    pulseTimeLatch[encoder_side] = pulseTime[encoder_side];
+    encoderCountLatch[encoder_side] = encoderCount[encoder_side];
     interrupts(); //Re-Enable interruptions
 
-    encoderDeltaCount = encoderCountLatch - encoderPrevCount;
+    encoderDeltaCount[encoder_side] = encoderCountLatch[encoder_side] - encoderPrevCount[encoder_side];
 
     
     if (firstRead==true)
     {
-        curRPM = 0;
+        curRPM[encoder_side] = 0;
         firstRead = false;
     }
     else
     {
-        if (encoderDeltaCount != 0) //New pulses
+        if (encoderDeltaCount[encoder_side] != 0) //New pulses
         {
             
             
-            pulseDeltaTime = pulseTimeLatch - pulsePrevTime;
+            pulseDeltaTime[encoder_side] = pulseTimeLatch[encoder_side] - pulsePrevTime[encoder_side];
             
-            if (pulseDeltaTime < 1) //Prevent division by 0
+            if (pulseDeltaTime[encoder_side] < 1) //Prevent division by 0
             {
-                curRPM = 0;
+                curRPM[encoder_side] = 0;
             }
             else
             {
-                curRPM = (double)encoderDeltaCount*(1000000.0/(double)pulseDeltaTime)*60.0/2400.0;
+                curRPM[encoder_side] = (double)encoderDeltaCount[encoder_side]*(1000000.0/(double)pulseDeltaTime[encoder_side])*60.0/2400.0;
             }
 
             //Set flag to remember if going forward or backward
-            if (encoderDeltaCount>0)
+            if (encoderDeltaCount[encoder_side]>0)
             {
-                lastPulseForward = true;
-                lastPulseBackward = false;
+                lastPulseForward[encoder_side] = true;
+                lastPulseBackward[encoder_side] = false;
             }else
             {
-                lastPulseForward = false;
-                lastPulseBackward = true;
+                lastPulseForward[encoder_side] = false;
+                lastPulseBackward[encoder_side] = true;
             }
             
         }
         else //No new pulses, use current time
         {
-            pulseDeltaTime = micros() - pulsePrevTime;
+            pulseDeltaTime[encoder_side] = micros() - pulsePrevTime[encoder_side];
          
-            if (pulseDeltaTime < 1)
+            if (pulseDeltaTime[encoder_side] < 1)
             {
-                curRPM = 0;
+                curRPM[encoder_side] = 0;
             }
             else
             {
-                curRPM = (double)1.0*(1000000.0/(double)pulseDeltaTime)*60.0/2400.0;
+                curRPM[encoder_side] = (double)1.0*(1000000.0/(double)pulseDeltaTime[encoder_side])*60.0/2400.0;
             }
 
-            if (lastPulseBackward)
+            if (lastPulseBackward[encoder_side])
             {
-                curRPM = -curRPM;
+                curRPM[encoder_side] = -curRPM[encoder_side];
                 
             }
 
@@ -316,53 +464,59 @@ double Encoder::readRPM()
     }
     
     
-    encoderPrevPrevCount = encoderPrevCount;
-    encoderPrevCount = encoderCountLatch;
+    encoderPrevPrevCount[encoder_side] = encoderPrevCount[encoder_side];
+    encoderPrevCount[encoder_side] = encoderCountLatch[encoder_side];
 
 
-    pulsePrevPrevTime = pulsePrevTime;
-    if (encoderDeltaCount != 0) //New pulses to update time
+    pulsePrevPrevTime[encoder_side] = pulsePrevTime[encoder_side];
+    if (encoderDeltaCount[encoder_side] != 0) //New pulses to update time
     {
-        pulsePrevTime = pulseTimeLatch;
+        pulsePrevTime[encoder_side] = pulseTimeLatch[encoder_side];
     }
     
 
-    if (curRPM < 0.5 && curRPM > -0.5)
+    if (curRPM[encoder_side] < 0.5 && curRPM[encoder_side] > -0.5)
     {
-        curRPM = 0;
+        curRPM[encoder_side] = 0;
     }
 
     //filter glitches (position overflow)
-    if ((curRPM > 10000) | (curRPM < -10000)){
-        curRPM = prevRPM;
+    if ((curRPM[encoder_side] > 10000) | (curRPM[encoder_side] < -10000)){
+        curRPM[encoder_side] = prevRPM[encoder_side];
     }  else {
-        prevRPM = curRPM;
+        prevRPM[encoder_side] = curRPM[encoder_side];
     }
     
     //---
-    curRPM_Filtered = (curRPM_Filtered*filterGain+curRPM)/(filterGain+1);
-    if (curRPM_Filtered < 0.1 && curRPM_Filtered > -0.1)
+    curRPM_Filtered[encoder_side] = (curRPM_Filtered[encoder_side]*filterGain[encoder_side]+curRPM[encoder_side])/(filterGain[encoder_side]+1);
+    if (curRPM_Filtered[encoder_side] < 0.1 && curRPM_Filtered[encoder_side] > -0.1)
     {
-        curRPM_Filtered = 0;
+        curRPM_Filtered[encoder_side] = 0;
     }
     
 
     //Store highest RPM ever
-    if (curRPM > highestRPM){
-        highestRPM = curRPM;
+    if (curRPM[encoder_side] > highestRPM[encoder_side]){
+        highestRPM[encoder_side] = curRPM[encoder_side];
     }
 
-    return curRPM_Filtered;
+    return curRPM_Filtered[encoder_side];
 
 }
 
 void Encoder::reset()
 {
-  encoderCount = 0;
-  encoderErro = false;
-  highestRPM = 0;
-  encoderPulseCount = 0;
-  encoderPulseError = 0;
+  encoderCount[LEFT] = 0;
+  encoderCount[RIGHT] = 0;
+  encoderErro[LEFT] = false;
+  encoderErro[RIGHT] = false;
+  highestRPM[LEFT] = 0;
+  highestRPM[RIGHT] = 0;
+  encoderPulseCount[LEFT] = 0;
+  encoderPulseCount[RIGHT] = 0;
+  encoderPulseError[LEFT] = 0;
+  encoderPulseError[RIGHT] = 0;
+  
 }
 
 
@@ -381,8 +535,10 @@ void Encoder:: debugPrint() {
 
     //---
 
-    Serial.print(", CurAngle:");
-    Serial.print(curAngle);
+    Serial.print(", CurAngle Left:");
+    Serial.print(curAngle[LEFT]);
+    Serial.print(", CurAngle Right:");
+    Serial.print(curAngle[RIGHT]);
 
     //---
 
@@ -392,8 +548,10 @@ void Encoder:: debugPrint() {
     // Serial.print(", P_PT:");
     // Serial.print(pulsePrevPrevTime);
 
-    Serial.print(", P_DT:");
-    Serial.print(pulseDeltaTime);
+    Serial.print(", P_DT_LEFT:");
+    Serial.print(pulseDeltaTime[LEFT]);
+    Serial.print(", P_DT_RIGHT:");
+    Serial.print(pulseDeltaTime[RIGHT]);
 
     // Serial.print(", P_C:");
     // Serial.print(encoderCountLatch);
@@ -401,11 +559,15 @@ void Encoder:: debugPrint() {
     // Serial.print(", P_PC:");
     // Serial.print(encoderPrevPrevCount);
     
-    Serial.print(", P_DC:");
-    Serial.print(encoderDeltaCount);
+    Serial.print(", P_DC_LEFT:");
+    Serial.print(encoderDeltaCount[LEFT]);
+    Serial.print(", P_DC_RIGHT:");
+    Serial.print(encoderDeltaCount[RIGHT]);
 
-    Serial.print(", RPM:");
-    Serial.print(curRPM);
+    Serial.print(", RPM LEFT:");
+    Serial.print(curRPM[LEFT]);
+    Serial.print(", RPM RIGHT:");
+    Serial.print(curRPM[RIGHT]);
 
     // Serial.print(", RPM_F:");
     // Serial.print(curRPM_Filtered);

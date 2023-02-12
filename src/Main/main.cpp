@@ -8,8 +8,7 @@
 
 #include "encoder.h"
 
-Encoder encoderRight(39,36);
-Encoder encoderLeft(34,35);
+Encoder encoder(34, 35, 39,36);
 
 MedianFilter encoderRightFilter(33,0);
 MedianFilter encoderLeftFilter(33,0);
@@ -39,8 +38,7 @@ bool debug = false;
 void setup() { 
   ros_init();
   led_strip_init();
-  encoderLeft.setup();
-  encoderRight.setup();
+  encoder.setup();
   pinMode(LED_BUILD_IN,OUTPUT);
   digitalWrite(LED_BUILD_IN,HIGH);
 }
@@ -60,14 +58,14 @@ void loop()
     //---------------------LEFT-------------------------------------------
     
     // status -------encoder 
-    double angle_encoder_read_left  = encoderLeft.readAngle();
+    double angle_encoder_read_left  = encoder.readAngle(LEFT);
 
-    double rpm_encoder_read_left = encoderLeft.readRPM();
+    double rpm_encoder_read_left = encoder.readRPM(LEFT);
     encoderLeftFilter.in(rpm_encoder_read_left);
 
     rpm_encoder_read_left = encoderLeftFilter.out();
 
-    double ticks_encoder_read_left = encoderLeft.readPulses();
+    double ticks_encoder_read_left = encoder.readPulses(LEFT);
 
     // cmd------ 
 
@@ -84,13 +82,13 @@ void loop()
 
     //status -- encoder 
 
-    double angle_encoder_read_right = encoderRight.readAngle();
+    double angle_encoder_read_right = encoder.readAngle(RIGHT);
 
-    double rpm_encoder_read_right = encoderRight.readRPM();
+    double rpm_encoder_read_right = encoder.readRPM(RIGHT);
     encoderRightFilter.in(rpm_encoder_read_right);
     rpm_encoder_read_right = encoderRightFilter.out();
 
-    double ticks_encoder_read_right = encoderRight.readPulses();
+    double ticks_encoder_read_right = encoder.readPulses(RIGHT);
 
     //cmd -- 
 
