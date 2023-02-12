@@ -2,6 +2,7 @@
 
 
 #include <Main/motor.h>
+// #include <Main/led_strip.h>
 #include <Main/tools.h>
 
 // fred(linear(m/s),angular(rad/s)) -> |cinematic| -> wheel(angular(rad/s)) -> |angular2rpm| -> wheel(angular(rpm)) -> |rpm2pwm| -> wheel(pwm)
@@ -30,7 +31,7 @@ void stop(motor motor){
 }
 
 
-void write_PWM(motor motor, int vel){
+void write_PWM(motor motor, float vel){
 
   //satured output
 
@@ -42,13 +43,18 @@ void write_PWM(motor motor, int vel){
   }
   
   //send to H bridge 
- 
-    ledcWrite(motor.Canal ,abs(vel));
-    digitalWrite(motor.In_B, vel < 0);
-    digitalWrite(motor.In_A, vel > 0);  
-
-
-  
+  if(vel >= 0)
+  {
+    ledcWrite(motor.Canal ,vel);
+    digitalWrite(motor.In_B, LOW);
+    digitalWrite(motor.In_A, HIGH);  
+  }
+  else
+  {
+     ledcWrite(motor.Canal,vel);
+     digitalWrite(motor.In_B, HIGH);
+     digitalWrite(motor.In_A, LOW);
+  }
 }
 
  int rpm2pwm(float speed_rpm){
@@ -82,6 +88,9 @@ void write2motors(int rpm_left, int rpm_right){
 
   pwm_left  = rpm2pwm(rpm_left);
   pwm_right = rpm2pwm(rpm_right);
+
+  pwm_left = saturation_under(pwm_left,PWM_SATURATION_UNDER);
+  pwm_right = saturation_under(pwm_right,PWM_SATURATION_UNDER);
 
   write_PWM(motor1,pwm_left); 
   write_PWM(motor2,pwm_right); 

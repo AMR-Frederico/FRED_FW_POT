@@ -65,7 +65,9 @@ volatile double highestRPM[2] = {0, 0};
 volatile int filterGain[2] = {20, 20};
 volatile double curRPM_Filtered[2] = {0, 0};
 
-
+volatile int motor_gear = 60 ;
+volatile int encoder_gear = 20; 
+volatile int relation_motor_encoder = motor_gear/encoder_gear;
 
 //--------------------------------------------------
 // Functions

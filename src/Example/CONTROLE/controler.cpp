@@ -1,7 +1,7 @@
 #include "controler.h"
 // #include <Main/tools.h>
 
-Controler::Controler(float kp, float ki, float kd)
+Controler::Controler(float kp,float ki, float kd)
 {   KP = kp;
     KD = kd;
     KI = ki;
@@ -14,6 +14,8 @@ Controler::Controler(float kp, float ki, float kd)
 }
 
 float Controler::output(float input_value, float current_value){
+    input_values = input_value;
+    current_values = current_value;
     error =  input_value - current_value ;
     time = micros();
     delta_time = time - last_time;
@@ -48,6 +50,30 @@ float Controler::derivative(){
 
 }
 
+void Controler::debug(){
+    
+     Serial.print(" |delta_time: ");
+    Serial.print(delta_time);
+
+    Serial.print(" |input_values: ");
+    Serial.print(input_values);
+    Serial.print(" |current_values: ");
+    Serial.print(current_values);
+
+    Serial.print(" ||error: ");
+    Serial.print(error);
+    Serial.print(" |P: ");
+    Serial.print(proporcional());
+    Serial.print(" |I: ");
+    Serial.print(error*KI*(delta_time/10000)/10,10);
+    Serial.print(" |D: ");
+    Serial.print(derivative());
+
+    Serial.print(" |output_value: ");
+    Serial.print(output_value);
+    Serial.println("");
+
+}
 
 
 

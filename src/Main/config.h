@@ -14,11 +14,11 @@
 #define L  0.300
 #define RADIUS 0.075
 
-#define MAX_PWM 1023
-#define MIN_PWM 0
+#define MAX_PWM 800
+#define MIN_PWM -800
 
 #define MAX_RPM 1000
-#define MIN_RPM 0
+#define MIN_RPM -1000
 
 #define MAX_SPEED_LINEAR 10 //m/s 
 #define MAX_SPEED_ANGULAR 3.141592653589*2 //rad/s 
