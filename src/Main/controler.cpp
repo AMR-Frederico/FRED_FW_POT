@@ -10,13 +10,15 @@ Controler::Controler(float kp, float ki, float kd)
     last_time = 0 ;
     delta_time= 0 ;
     last_error = 0;
+    time_div = 0;
     error = 0;
 }
 
 float Controler::output(float input_value, float current_value){
     error =  input_value - current_value ;
-    time = micros();
+    time = millis();
     delta_time = time - last_time;
+    last_time = time;
     if(input_value == 0){
         output_value =  input_value + proporcional() + derivative() ;
     }else{
@@ -25,7 +27,6 @@ float Controler::output(float input_value, float current_value){
 
     // output_value = saturation(output_value,1000);
 
-    last_time = time;
     return output_value;
 }
 
@@ -36,7 +37,8 @@ float Controler::proporcional(){
 }
 
 float Controler::integrative(){
-    integral = integral + (error*(delta_time/1000000));
+    time_div = delta_time;
+    integral = integral + error;
     // integral = saturation(integral,1000);
     return integral*KI;
 

@@ -17,9 +17,10 @@ public:
     float delta_error;
     float output_value;
     float integral;
+    float time_div;
+    unsigned long  delta_time;
     unsigned long time; 
     unsigned long last_time;
-    unsigned long  delta_time;
 
     Controler(float kp, float kd, float ki);
     float output(float input_value, float current_value);

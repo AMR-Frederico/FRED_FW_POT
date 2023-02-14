@@ -16,7 +16,7 @@ MedianFilter encoderLeftFilter(33,0);
 #include "controler.h"
 Controler  esquerda_controler(0.4,0.01,0.008);  //(p,i,d)
 // Controler  direita_controler(0.4,0.01,0.008);
-Controler  direita_controler(0.4 , 3.5 , 0.01 );  //(p,i,d)
+Controler  direita_controler(0.4 , 0.0000001 , 0.01 );  //(p,i,d)
 
 
 
@@ -32,7 +32,7 @@ float rpm_left = 0;
 int rpm = 0;
 int rpm_controled = 0;
 
-bool debug = false;
+bool debug = true;
 
 
 
@@ -74,7 +74,7 @@ void loop()
     // rpm_left =  saturation(rpm_left,800);
 
     // float controled_RPM_left = rpm_left;
-    float controled_RPM_left = esquerda_controler.output(rpm_left,0);
+    float controled_RPM_left = esquerda_controler.output(rpm_left,rpm_encoder_read_left);
 
     //------------------------------RIGHT-------------------------------------------
 
@@ -114,7 +114,7 @@ void loop()
     ros_loop(angular_speed_right,        angular_speed_left,
              angle_encoder_read_left,    angle_encoder_read_right,
              rpm_encoder_read_left ,     rpm_encoder_read_right,
-             ticks_encoder_read_left,    ticks_encoder_read_right,
+             direita_controler.error,    direita_controler.integral,
              rpm_controled,              
              controled_RPM_left,         rpm_left);
     nh.spinOnce();
