@@ -9,6 +9,8 @@ private:
     float integrative();
     float derivative();
 public:
+    float input_values;
+    float current_values;
     float KP;
     float KD;
     float KI;
@@ -19,7 +21,8 @@ public:
     float integral;
     unsigned long time; 
     unsigned long last_time;
-    unsigned long  delta_time;
+    float  delta_time;
+    void debug();
 
     Controler(float kp, float kd, float ki);
     float output(float input_value, float current_value);

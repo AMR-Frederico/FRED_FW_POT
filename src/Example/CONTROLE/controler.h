@@ -21,7 +21,7 @@ public:
     float integral;
     unsigned long time; 
     unsigned long last_time;
-    unsigned long  delta_time;
+    float  delta_time;
     void debug();
 
     Controler(float kp, float kd, float ki);

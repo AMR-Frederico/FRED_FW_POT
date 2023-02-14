@@ -41,7 +41,7 @@ ros::NodeHandle  nh;
 //------------------SUBS--------------------
 //locomotion 
 ros::Subscriber<geometry_msgs::Twist> subCmdVel(cmd_vel_topic, cmdVelCB);
-ros::Subscriber<std_msgs::Int16> subCmd_RPM(cmd_rpm_topic, cmdRPMCB); 
+ros::Subscriber<std_msgs::Float32> subCmd_RPM(cmd_rpm_topic, cmdRPMCB); 
 // //lights 
 // ros::Subscriber<std_msgs::Float32> subLedStrip(cmd_led_strip_topic, led_strip_controler_ros );
 

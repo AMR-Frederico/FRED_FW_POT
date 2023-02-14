@@ -5,7 +5,7 @@
 float speed_linear ;
 float speed_angular ; 
 
-int cmd_rpm; 
+float cmd_rpm; 
 
 //receive the twsit msg and figure out the speed of each wheel 
 void cmdVelCB( const geometry_msgs::Twist& twist)
@@ -17,12 +17,12 @@ void cmdVelCB( const geometry_msgs::Twist& twist)
 
 }
 
-void cmdRPMCB(const std_msgs::Int16& msgs){
+void cmdRPMCB(const std_msgs::Float32& msgs){
     cmd_rpm = msgs.data;
 
 }
 
-int getRPMsetpoint(){
+float getRPMsetpoint(){
     return cmd_rpm; 
 }
 

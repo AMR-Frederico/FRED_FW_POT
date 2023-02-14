@@ -17,8 +17,8 @@ float Controler::output(float input_value, float current_value){
     input_values = input_value;
     current_values = current_value;
     error =  input_value - current_value ;
-    time = micros();
-    delta_time = time - last_time;
+    time = millis();
+    delta_time = (double)(time - last_time)/1000;
     if(input_value == 0){
         output_value =  input_value + proporcional() + derivative() ;
     }else{
@@ -26,7 +26,7 @@ float Controler::output(float input_value, float current_value){
     }
 
     // output_value = saturation(output_value,1000);
-
+    last_error = error;
     last_time = time;
     return output_value;
 }
@@ -38,14 +38,14 @@ float Controler::proporcional(){
 }
 
 float Controler::integrative(){
-    integral = integral + (error*(delta_time/1000000));
+    integral += error*delta_time;
     // integral = saturation(integral,1000);
     return integral*KI;
 
 }
 
 float Controler::derivative(){
-    delta_error = (last_error - error);
+    delta_error = (last_error - error)/delta_time;
     return delta_error*KD;
 
 }
@@ -65,7 +65,7 @@ void Controler::debug(){
     Serial.print(" |P: ");
     Serial.print(proporcional());
     Serial.print(" |I: ");
-    Serial.print(error*KI*(delta_time/10000)/10,10);
+    Serial.print(integrative());
     Serial.print(" |D: ");
     Serial.print(derivative());
 
