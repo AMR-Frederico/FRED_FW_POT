@@ -503,7 +503,7 @@ double Encoder::readRPM(int encoder_side)
         highestRPM[encoder_side] = curRPM[encoder_side];
     }
 
-    return curRPM_Filtered[encoder_side];
+    return curRPM_Filtered[encoder_side]/relation_motor_encoder;
 
 }
 

@@ -14,11 +14,11 @@ MedianFilter encoderLeftFilter(33,0);
 
 
 #include "controler.h"
-Controler  esquerda_controler(0.4, 0.01, 0.008);  //(p,i,d)
+Controler  esquerda_controler(0.8, 0.01, 0.008);  //(p,i,d)
 // Controler  direita_controler(0.4,0.01,0.008);
-Controler  direita_controler(0.4 , 0.001 , 0.01 );  //(p,i,d)
+Controler  direita_controler(2, 30 , 10 );  //(p,i,d) ->0.4
 
-
+// p -> TEM QUE SER MENOR QUE 1, i= 20
 
 const int ACC = 50 ;
 const int GAIN = 1 ;
@@ -114,7 +114,7 @@ void loop()
     ros_loop(angular_speed_right,        angular_speed_left,
              angle_encoder_read_left,    angle_encoder_read_right,
              rpm_encoder_read_left ,     rpm_encoder_read_right,
-             direita_controler.integral,    direita_controler.error,
+             ticks_encoder_read_left,    ticks_encoder_read_right,
              rpm_controled,              
              controled_RPM_left,         rpm_left);
     nh.spinOnce();
