@@ -32,7 +32,7 @@ float rpm_left = 0;
 int rpm = 0;
 int rpm_controled = 0;
 
-bool debug = true;
+bool debug = false;
 
 
 
