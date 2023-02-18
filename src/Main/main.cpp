@@ -14,9 +14,9 @@ MedianFilter encoderLeftFilter(33,0);
 
 
 #include "controler.h"
-Controler  esquerda_controler(0.4,0.01,0.008);  //(p,i,d)
+Controler  esquerda_controler(0.4,0.01,0.08);  //(p,i,d)
 // Controler  direita_controler(0.4,0.01,0.008);
-Controler  direita_controler(0.4 , 0.0000001 , 0.01 );  //(p,i,d)
+Controler  direita_controler(0.4 , 0.0, 0.01 );  //(p,i,d)
 
 
 
