@@ -4,13 +4,15 @@
 #include <Main/controler.h>
 
 #include "MedianFilter.h"
-
+#include "rampa.h"
 #include "encoder.h"
 
 Encoder encoder(34, 35, 39,36);
 
 MedianFilter encoderRightFilter(33,0);
 MedianFilter encoderLeftFilter(33,0);
+Profile rampaEsquerda;
+Profile rampaDireita;
 
 
 #include "controler.h"
@@ -32,7 +34,7 @@ float rpm_left = 0;
 float rpm = 0;
 float rpm_controled = 0;
 
-bool debug = true;
+bool debug = false;
 
 
 
@@ -74,7 +76,7 @@ void loop()
     // rpm_left =  saturation(rpm_left,800);
 
     // float controled_RPM_left = rpm_left;
-    float controled_RPM_left = esquerda_controler.output(rpm_left,0);
+    float controled_RPM_left = rampaEsquerda.rampa(esquerda_controler.output(rpm_left,rpm_encoder_read_left), 50);
 
     //------------------------------RIGHT-------------------------------------------
 
@@ -95,7 +97,7 @@ void loop()
     rpm_right = angular2rpm(angular_speed_right);   // [RPM]
     // rpm_right = saturation(rpm_right,800);
     // float controled_RPM_right = rpm_right;
-    float controled_RPM_right = direita_controler.output(rpm_right,rpm_encoder_read_right);
+    float controled_RPM_right = rampaDireita.rampa(direita_controler.output(rpm_right,rpm_encoder_read_right), 50);
 
   //----------------debug------------------------------
     if(debug){
