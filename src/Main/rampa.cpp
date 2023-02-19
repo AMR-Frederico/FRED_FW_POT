@@ -1,6 +1,4 @@
-#include "profiler.h" // header in local directory
-
-
+#include "rampa.h" // header in local directory
 
 unsigned long current_time = 0;
 

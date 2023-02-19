@@ -7,20 +7,31 @@ float speed_angular ;
 
 float cmd_rpm; 
 
+bool debug = false; 
+
 //receive the twsit msg and figure out the speed of each wheel 
 void cmdVelCB( const geometry_msgs::Twist& twist)
 {
 
   speed_angular = twist.angular.z;
   speed_linear  = twist.linear.x;
-
-
 }
 
 void cmdRPMCB(const std_msgs::Float32& msgs){
     cmd_rpm = msgs.data;
 
 }
+
+void debugControlCB(const std_msgs::Bool& msg){
+
+  debug = msg.data; 
+
+}
+
+bool debugControl(){
+  return debug;
+}
+
 
 float getRPMsetpoint(){
     return cmd_rpm; 
@@ -45,3 +56,7 @@ float cinematic_right(float linear, float angular, float gain){
 
   return (linear -   (angular*(L/2)))/RADIUS;
 }
+
+
+
+

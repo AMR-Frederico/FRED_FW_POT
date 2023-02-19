@@ -12,11 +12,10 @@ Encoder encoder(34, 35, 39,36);
 MedianFilter encoderRightFilter(33,0);
 MedianFilter encoderLeftFilter(33,0);
 
-
 #include "controler.h"
-Controler  esquerda_controler(0.8, 0.01, 0.008);  //(p,i,d)
+Controler  esquerda_controler(2, 30 , 10);  //(p,i,d)
 // Controler  direita_controler(0.4,0.01,0.008);
-Controler  direita_controler(2, 30 , 10 );  //(p,i,d) ->0.4
+Controler  direita_controler(2, 30 , 10);  //(p,i,d) ->0.4
 
 // p -> TEM QUE SER MENOR QUE 1, i= 20
 
@@ -32,10 +31,10 @@ float rpm_left = 0;
 float rpm = 0;
 float rpm_controled = 0;
 
-bool debug = true;
+float controled_RPM_right;
+float controled_RPM_left ;
 
-
-
+//bool debug = false;
 
 void setup() { 
   ros_init();
@@ -53,6 +52,7 @@ void loop()
     float linear = getLinear();//robot
     float angular = getAngular();//robot
 
+    debug = debugControl();
 
     //---------------------LEFT-------------------------------------------
     
@@ -74,7 +74,7 @@ void loop()
     // rpm_left =  saturation(rpm_left,800);
 
     // float controled_RPM_left = rpm_left;
-    float controled_RPM_left = esquerda_controler.output(rpm_left,0);
+    controled_RPM_left = esquerda_controler.output(rpm_left,rpm_encoder_read_left);
 
     //------------------------------RIGHT-------------------------------------------
 
@@ -95,7 +95,7 @@ void loop()
     rpm_right = angular2rpm(angular_speed_right);   // [RPM]
     // rpm_right = saturation(rpm_right,800);
     // float controled_RPM_right = rpm_right;
-    float controled_RPM_right = direita_controler.output(rpm_right,rpm_encoder_read_right);
+    controled_RPM_right = direita_controler.output(rpm_right,rpm_encoder_read_right);
 
   //----------------debug------------------------------
     if(debug){
@@ -116,6 +116,6 @@ void loop()
              rpm_encoder_read_left ,     rpm_encoder_read_right,
              ticks_encoder_read_left,    ticks_encoder_read_right,
              rpm_controled,              
-             controled_RPM_left,         rpm_left);
+             controled_RPM_left,         controled_RPM_right);
     nh.spinOnce();
 }
