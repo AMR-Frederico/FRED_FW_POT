@@ -4,13 +4,15 @@
 #include <Main/controler.h>
 
 #include "MedianFilter.h"
-
+#include "rampa.h"
 #include "encoder.h"
 
 Encoder encoder(34, 35, 39,36);
 
 MedianFilter encoderRightFilter(33,0);
 MedianFilter encoderLeftFilter(33,0);
+Profile rampaEsquerda;
+Profile rampaDireita;
 
 #include "controler.h"
 Controler  esquerda_controler(2, 30 , 10);  //(p,i,d)
