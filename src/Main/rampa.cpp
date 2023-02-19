@@ -1,58 +1,63 @@
 #include "rampa.h" // header in local directory
+#define LEFT 0
+#define RIGHT 1
 
-unsigned long current_time = 0;
+unsigned long current_time[2] = {0,0};
 
-static long last_time = 0;
-static double speed_increment = 0;
-double delta_time = 0;
-double last_set = 0;
+long last_time[2] = {0, 0};
+double speed_increment[2] = {0, 0};
+double delta_time[2] = {0,0};
+double last_set[2] = {0,0};
+double ramp_set_speed[2] = {0,0};
 
+double rampa(double set_speed, double acc, int side)
+{
+   current_time[side] = millis();
 
+   // if the set speed changed, recalculate
+   //  if(last_set!=set_speed){
 
- double Profile::rampa(double set_speed, double acc ){
-     current_time = millis();
-    
-     //if the set speed changed, recalculate
-      // if(last_set!=set_speed){
-
-         delta_time = (current_time-last_time); 
-         speed_increment = (acc*(delta_time/1000));
+   delta_time[side] = (current_time[side] - last_time[side]);
+   speed_increment[side] = (acc * (delta_time[side] / 1000));
 
    //   / }
-      last_time = current_time;
-      // last_set = set_speed;
+   last_time[side] = current_time[side];
+   // last_set = set_speed;
 
-      //rampa positive
-     if(ramp_set_speed<set_speed){
-         ramp_set_speed = ramp_set_speed + speed_increment; 
-         if(ramp_set_speed>set_speed){
-            ramp_set_speed = set_speed;
-         }
-     }
-      //rampa negative
-     if(ramp_set_speed>set_speed){
-        ramp_set_speed = ramp_set_speed - speed_increment; 
-         if(ramp_set_speed<set_speed){
-            ramp_set_speed = set_speed;
-         }
-         
-     }
-     return ramp_set_speed;
+   // rampa positive
+   if (ramp_set_speed[side] < set_speed)
+   {
+      ramp_set_speed[side] = ramp_set_speed[side] + speed_increment[side];
+      if (ramp_set_speed[side] > set_speed)
+      {
+         ramp_set_speed[side] = set_speed;
+      }
+   }
+   // rampa negative
+   if (ramp_set_speed[side] > set_speed)
+   {
+      ramp_set_speed[side] = ramp_set_speed[side] - speed_increment[side];
+      if (ramp_set_speed[side] < set_speed)
+      {
+         ramp_set_speed[side] = set_speed;
+      }
+   }
+   //   delay(100);
+   return ramp_set_speed[side];
+}
 
- }
+void debugPrint(double set_speed, int side)
+{
+   Serial.print("Set Speed: ");
+   Serial.print(set_speed);
+   Serial.print("| Target Speed: ");
+   Serial.print(ramp_set_speed[side]);
+   Serial.print("| Speed Increment: ");
+   Serial.print(speed_increment[side]);
+   Serial.print("| Current Time: ");
+   Serial.print(current_time[side]);
+   Serial.print("| Delta_time: ");
+   Serial.print(delta_time[side]);
 
-void Profile::debugPrint(double set_speed){
-    Serial.print("Set Speed: ");
-    Serial.print( set_speed);
-    Serial.print("| Target Speed: ");
-    Serial.print(ramp_set_speed);
-    Serial.print("| Speed Increment: ");
-    Serial.print(speed_increment);
-    Serial.print("| Current Time: ");
-    Serial.print(current_time);
-    Serial.print("| Delta_time: ");
-    Serial.print(delta_time);
-   
-    Serial.println();
-
- }
+   Serial.println();
+}
