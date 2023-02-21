@@ -15,6 +15,11 @@ void cmdVelCB( const geometry_msgs::Twist& twist)
 
   speed_angular = twist.angular.z;
   speed_linear  = twist.linear.x;
+
+  if (speed_angular < 0.1)
+    speed_angular = 0; 
+  if (speed_linear < 0.1)
+    speed_linear = 0; 
 }
 
 void cmdRPMCB(const std_msgs::Float32& msgs){

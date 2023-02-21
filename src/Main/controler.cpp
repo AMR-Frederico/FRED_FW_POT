@@ -40,7 +40,7 @@ float Controler::proporcional(){
 float Controler::integrative(){
     integral += error*delta_time;
     // integral = saturation(integral,1000);
-    return integral;
+    return integral*KI;
 
 }
 
