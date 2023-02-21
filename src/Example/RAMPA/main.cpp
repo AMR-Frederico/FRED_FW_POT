@@ -34,25 +34,27 @@ float rpm_controled = 0;
 float controled_RPM_right;
 float controled_RPM_left ;
 
-//bool debug = false;
+// bool debug = false;
 
 void setup() { 
-  ros_init();
+  // ros_init();
+  Serial.begin(115200);
   encoder.setup();
 }
 
 void loop() 
 {   
     //add conection protection 
-     if(!rosConnected(nh,_connect))
-       write2motors( 0,0);
+    //  if(!rosConnected(nh,_connect))
+    //    write2motors( 0,0);
 
     
 
     float linear = getLinear();//robot
     float angular = getAngular();//robot
 
-    debug = debugControl();
+    // debug = debugControl();
+    debug = false;
 
     //---------------------LEFT-------------------------------------------
     
@@ -70,7 +72,9 @@ void loop()
 
     float angular_speed_left = cinematic_left(linear,angular,GAIN); //wheel [rad/s]
 
-    rpm_left = angular2rpm(angular_speed_left);// [RPM]
+    // rpm_left = angular2rpm(angular_speed_left);// [RPM]
+    rpm_left = 1000;
+    // float rpm_left_com_rampa = rpm_left;
     float rpm_left_com_rampa = rampa(rpm_left, 100, LEFT);
     // rpm_left =  saturation(rpm_left,800);
 
@@ -95,7 +99,8 @@ void loop()
 
     float angular_speed_right = cinematic_right(linear,angular,GAIN); //wheel [RAD/S]
 
-    rpm_right = angular2rpm(angular_speed_right);   // [RPM]
+    // rpm_right = angular2rpm(angular_speed_right);   // [RPM]
+    rpm_right = 1000;
     float rpm_right_com_rampa = rampa(rpm_right, 100, RIGHT);
     // rpm_right = saturation(rpm_right,800);
     // float controled_RPM_right = rpm_right;
@@ -115,12 +120,17 @@ void loop()
     write2motors(controled_RPM_left,controled_RPM_right);
     }
 
+    Serial.println ("Rampa Esquerda: ");
+    debugPrint(rpm_left, LEFT);
+    Serial.println ("Rampa Direita: ");
+    debugPrint(rpm_right, RIGHT);
 
-    ros_loop(angular_speed_right,        angular_speed_left,
-             angle_encoder_read_left,    angle_encoder_read_right,
-             rpm_encoder_read_left ,     rpm_encoder_read_right,
-             ticks_encoder_read_left,    ticks_encoder_read_right,
-             rpm_controled,              
-             controled_RPM_left,         controled_RPM_right);
-    nh.spinOnce();
+
+    // ros_loop(angular_speed_right,        angular_speed_left,
+    //          angle_encoder_read_left,    angle_encoder_read_right,
+    //          rpm_encoder_read_left ,     rpm_encoder_read_right,
+    //          ticks_encoder_read_left,    ticks_encoder_read_right,
+    //          rpm_controled,              
+    //          controled_RPM_left,         controled_RPM_right);
+    // nh.spinOnce();
 }
