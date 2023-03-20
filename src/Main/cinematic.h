@@ -16,10 +16,12 @@ void cmdVelCB( const geometry_msgs::Twist& twist)
   speed_angular = twist.angular.z;
   speed_linear  = twist.linear.x;
 
-  // if (speed_angular < 0.1)
-  //   speed_angular = 0; 
-  // if (speed_linear < 0.1)
-  //   speed_linear = 0; 
+  if (speed_angular < 0.1)
+    speed_angular = 0; 
+  if (speed_linear < 0.1)
+    speed_linear = 0; 
+}
+
 }
 
 void cmdRPMCB(const std_msgs::Float32& msgs){
@@ -59,7 +61,7 @@ float cinematic_left(float linear, float angular,float gain){
 //return right wheel speed in radians/sec 
 float cinematic_right(float linear, float angular, float gain){
 
-  return (linear -   (angular*(L/2)))/RADIUS;
+  return gain*(linear - angular*(L/2))/RADIUS;
 }
 
 

@@ -13,9 +13,9 @@ MedianFilter encoderRightFilter(33,0);
 MedianFilter encoderLeftFilter(33,0);
 
 #include "controler.h"
-Controler  esquerda_controler(2,0.5,10);  //(p,i,d)
-// Controler  direita_controler(0.4,0.01,0.008);
-Controler  direita_controler(2,0.5,10);  //(p,i,d) ->0.4
+Controler  esquerda_controler(2, 0.5, 1);  //(p,i,d)
+// Controler  direita_controler(2, 1.2, 4);
+Controler  direita_controler(2, 0.5, 1);  //(p,i,d) ->0.4
 
 // p -> TEM QUE SER MENOR QUE 1, i= 20
 
@@ -71,7 +71,7 @@ void loop()
     float angular_speed_left = cinematic_left(linear,angular,GAIN); //wheel [rad/s]
 
     rpm_left = angular2rpm(angular_speed_left);// [RPM]
-    float rpm_left_com_rampa = rampa(rpm_left, 100, LEFT);
+    float rpm_left_com_rampa = rampa(rpm_left, 200, LEFT);
     // rpm_left =  saturation(rpm_left,800);
 
     // float controled_RPM_left = rpm_left;
@@ -96,7 +96,7 @@ void loop()
     float angular_speed_right = cinematic_right(linear,angular,GAIN); //wheel [RAD/S]
 
     rpm_right = angular2rpm(angular_speed_right);   // [RPM]
-    float rpm_right_com_rampa = rampa(rpm_right, 100, RIGHT);
+    float rpm_right_com_rampa = rampa(rpm_right, 200, RIGHT);
     // rpm_right = saturation(rpm_right,800);
     // float controled_RPM_right = rpm_right;
     float controled_RPM_right = direita_controler.output(rpm_right_com_rampa, rpm_encoder_read_right);
