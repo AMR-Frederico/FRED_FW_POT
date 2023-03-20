@@ -1,6 +1,4 @@
 
-
-
 #include <Main/motor.h>
 #include <Main/tools.h>
 
@@ -9,10 +7,10 @@
 //@vel PWM signal between 0 and 1023 
 // postive our negative representes de direction, positive been forward
 
-motor motor1(M1_IN1 ,M1_IN2,M1_PWM,0);
-motor motor2(M2_IN1 ,M2_IN2,M2_PWM,1);
-motor motor3(M3_IN1 ,M3_IN2,M3_PWM,3);
-motor motor4(M4_IN1 ,M4_IN2,M4_PWM,4);
+motor motor1(M1_IN1, M1_IN2, M1_PWM, 0);
+motor motor2(M2_IN1, M2_IN2, M2_PWM, 1);
+motor motor3(M3_IN1, M3_IN2, M3_PWM, 3);
+motor motor4(M4_IN1, M4_IN2, M4_PWM, 4);
 
 
 //Global 
@@ -20,8 +18,6 @@ motor motor4(M4_IN1 ,M4_IN2,M4_PWM,4);
 int pwm_right = 0 ;
 int pwm_left = 0  ; 
 int pwm_motor = 0;
-
-
 
 void stop(motor motor){
   digitalWrite(motor.In_A, HIGH);  
@@ -46,9 +42,6 @@ void write_PWM(motor motor, int vel){
     ledcWrite(motor.Canal ,abs(vel));
     digitalWrite(motor.In_B, vel < 0);
     digitalWrite(motor.In_A, vel > 0);  
-
-
-  
 }
 
  int rpm2pwm(float speed_rpm){
@@ -83,9 +76,9 @@ void write2motors(int rpm_left, int rpm_right){
   pwm_left  = rpm2pwm(rpm_left);
   pwm_right = rpm2pwm(rpm_right);
 
-  write_PWM(motor1,pwm_left); 
+  write_PWM(motor1,pwm_right); 
   write_PWM(motor2,pwm_right); 
-  write_PWM(motor3,pwm_right); 
+  write_PWM(motor3,pwm_left); 
   write_PWM(motor4,pwm_left); 
 
 }
