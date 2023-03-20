@@ -18,7 +18,7 @@
 
 const int freq = 1000;
 
-int vel = 100;
+int vel = 900;
 
 const int ledChannel1 = 0;
 const int ledChannel2 = 1;
@@ -56,15 +56,15 @@ void setup()
   ledcAttachPin(PWM_M3, ledChannel3);
   ledcAttachPin(PWM_M4, ledChannel4);
 
-  ledcWrite(ledChannel2, vel);
   ledcWrite(ledChannel1, vel);
+  ledcWrite(ledChannel2, vel);
   ledcWrite(ledChannel3, vel);
-  ledcWrite(ledChannel4, vel);
+   ledcWrite(ledChannel4, vel);
 
   digitalWrite(S1_M1, 1); 
   digitalWrite(S1_M2, 1); 
   digitalWrite(S1_M3, 0); 
-  digitalWrite(S1_M4, 1); 
+   digitalWrite(S1_M4, 1); 
 
   digitalWrite(S2_M1, 0);
   digitalWrite(S2_M2, 0);

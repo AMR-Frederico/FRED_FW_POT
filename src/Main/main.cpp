@@ -13,9 +13,9 @@ MedianFilter encoderRightFilter(33,0);
 MedianFilter encoderLeftFilter(33,0);
 
 #include "controler.h"
-Controler  esquerda_controler(2, 30 , 10);  //(p,i,d)
+Controler  esquerda_controler(2,0.5,10);  //(p,i,d)
 // Controler  direita_controler(0.4,0.01,0.008);
-Controler  direita_controler(2, 30 , 10);  //(p,i,d) ->0.4
+Controler  direita_controler(2,0.5,10);  //(p,i,d) ->0.4
 
 // p -> TEM QUE SER MENOR QUE 1, i= 20
 
