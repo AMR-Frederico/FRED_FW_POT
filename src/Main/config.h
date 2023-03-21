@@ -32,9 +32,9 @@
 #define CANAL_M3 2
 #define CANAL_M4 3
 
-#define  M1_PWM  15
-#define  M1_IN1  18 
-#define  M1_IN2  12
+#define  M1_IN1  15
+#define  M1_IN2  18
+#define  M1_PWM  12
 
 #define  M2_IN1  23
 #define  M2_IN2  19
