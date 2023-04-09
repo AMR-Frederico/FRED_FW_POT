@@ -53,13 +53,13 @@ float getAngular(){
 //return left wheel speed in radians/sec 
 float cinematic_left(float linear, float angular,float gain){
 
-  return gain*(linear + angular*(L/2))/RADIUS;
+  return gain*(linear - angular*(L/2))/RADIUS;
 }
 
 //return right wheel speed in radians/sec 
 float cinematic_right(float linear, float angular, float gain){
 
-  return gain*(linear - angular*(L/2))/RADIUS;
+  return gain*(linear + angular*(L/2))/RADIUS;
 }
 
 
