@@ -13,9 +13,11 @@ MedianFilter encoderRightFilter(33,0);
 MedianFilter encoderLeftFilter(33,0);
 
 #include "controler.h"
-Controler  esquerda_controler(2, 0.5, 1);  //(p,i,d)
-// Controler  direita_controler(2, 1.2, 4);
-Controler  direita_controler(2, 0.5, 1);  //(p,i,d) ->0.4
+Controler  esquerda_controler(1, 0, 0);  //(p,i,d)
+Controler  direita_controler(1, 0, 0);  //(p,i,d) ->0.4
+
+// Controler  esquerda_controler(2, 0.5, 1);  //(p,i,d)
+// Controler  direita_controler(2, 0.5, 1);  //(p,i,d) ->0.4
 
 // p -> TEM QUE SER MENOR QUE 1, i= 20
 
@@ -47,7 +49,7 @@ void loop()
      if(!rosConnected(nh,_connect))
        write2motors( 0,0);
 
-    
+    digitalWrite(2,HIGH);
 
     float linear = getLinear();//robot
     float angular = getAngular();//robot

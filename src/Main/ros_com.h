@@ -184,4 +184,6 @@ void ros_loop(float speed_right,               float speed_left,
 
     setedRpmRightMsg.data = control_output_right;
     subSetedRpmRight.publish(&controlVelOutputRightMsg);
+
+    
 }
