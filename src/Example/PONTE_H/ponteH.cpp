@@ -62,15 +62,15 @@ void setup()
   ledcWrite(ledChannel3, vel);
   ledcWrite(ledChannel4, vel);
 
-  digitalWrite(S1_M1, 1); 
-  digitalWrite(S1_M2, 1); 
-  digitalWrite(S1_M3, 1); 
-  digitalWrite(S1_M4, 1); 
+  digitalWrite(S1_M1, 0); 
+  digitalWrite(S1_M2, 0); 
+  digitalWrite(S1_M3, 0); 
+  digitalWrite(S1_M4, 0); 
 
-  digitalWrite(S2_M1, 0);
-  digitalWrite(S2_M2, 0);
-  digitalWrite(S2_M3, 0);
-  digitalWrite(S2_M4, 0);
+  digitalWrite(S2_M1, 1);
+  digitalWrite(S2_M2, 1);
+  digitalWrite(S2_M3, 1);
+  digitalWrite(S2_M4, 1);
 
   
 }
