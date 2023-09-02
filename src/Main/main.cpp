@@ -22,7 +22,8 @@ Controler  direita_controler(1, 0, 0);  //(p,i,d) ->0.4
 // p -> TEM QUE SER MENOR QUE 1, i= 20
 
 const int ACC = 50 ;
-const int GAIN = 1 ;
+// const int GAIN = 1 ;
+const int GAIN = 10 ;
 const int GAIN_ANGULAR = 7;
 
 bool _connect = false ;
@@ -46,8 +47,12 @@ void setup() {
 void loop() 
 {   
     //add conection protection 
-     if(!rosConnected(nh,_connect))
-       write2motors( 0,0);
+     if(!rosConnected(nh,_connect)){
+
+      write2motors( 0,0);
+      digitalWrite(2,LOW);
+    
+    }
 
     digitalWrite(2,HIGH);
 
@@ -77,7 +82,7 @@ void loop()
     // rpm_left =  saturation(rpm_left,800);
 
     // float controled_RPM_left = rpm_left;
-    float controled_RPM_left = esquerda_controler.output(rpm_left_com_rampa, rpm_encoder_read_left);
+    float controled_RPM_left = esquerda_controler.output(rpm_left, rpm_encoder_read_left);
     // float controled_RPM_left = esquerda_controler.output(rpm_left,rpm_encoder_read_left);
 
 
@@ -98,17 +103,15 @@ void loop()
     float angular_speed_right = cinematic_right(linear,angular,GAIN); //wheel [RAD/S]
 
     rpm_right = angular2rpm(angular_speed_right);   // [RPM]
-    float rpm_right_com_rampa = rampa(rpm_right, 200, RIGHT);
-    // rpm_right = saturation(rpm_right,800);
-    // float controled_RPM_right = rpm_right;
-    float controled_RPM_right = direita_controler.output(rpm_right_com_rampa, rpm_encoder_read_right);
-    // float controled_RPM_right = direita_controler.output(rpm_right,rpm_encoder_read_right);
+    float rpm_right_com_rampa = rampa(rpm_right, 200, RIGHT); //not used
+
+    float controled_RPM_right = direita_controler.output(rpm_right, rpm_encoder_read_right); //not used
 
   //----------------debug------------------------------
     if(debug){
-    rpm = getRPMsetpoint();
-    rpm_controled = direita_controler.output(rpm,rpm_encoder_read_right);
-    write2motor(rpm_controled,2);
+      rpm = getRPMsetpoint();
+      rpm_controled = direita_controler.output(rpm,rpm_encoder_read_right);
+      write2motor(rpm_controled,2);
     //write2motor(rpm,2);
     }
   //--------------------------execute-----------------
@@ -117,6 +120,7 @@ void loop()
     write2motors(controled_RPM_left,controled_RPM_right);
     }
 
+  
 
     ros_loop(angular_speed_right,        angular_speed_left,
              angle_encoder_read_left,    angle_encoder_read_right,

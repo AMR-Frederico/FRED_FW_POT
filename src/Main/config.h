@@ -8,14 +8,18 @@
 
 
 #define SATURATION 1020
+
+// #define SATURATION 4095
 #define  FREQUENCIA 1000  
 
 
-#define L  0.300
+// #define L  0.300
+#define L 0.3
+
 #define RADIUS 0.075
 
-#define MAX_PWM 800
-#define MIN_PWM -800
+#define MAX_PWM 1020
+#define MIN_PWM -1020
 
 #define MAX_RPM 1000
 #define MIN_RPM -1000

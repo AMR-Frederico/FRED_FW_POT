@@ -176,7 +176,7 @@ void ros_loop(float speed_right,               float speed_left,
     ticksLeftMsg.data = ticks_encoder_read_left;
     subTicksLeft.publish(&ticksLeftMsg);
 
-    rpmControledMsg.data = rpm_controled;
+    rpmControledMsg.data = control_output_left;
     subControledRPM.publish(&rpmControledMsg);
     
     setedRpmLeftMsg.data = control_output_left;
